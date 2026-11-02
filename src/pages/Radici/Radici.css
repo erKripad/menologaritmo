@@ -1,5 +1,8 @@
 .radici {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  padding: 80px var(--gutter);
+  padding-block: clamp(24px, 4vh, 48px);
+}
+
+.radici__content {
+  display: flex;
+  justify-content: center;
 }

@@ -1,11 +1,9 @@
 import AboutSection from './sections/AboutSection/AboutSection.jsx'
 import RecentWorks from './sections/RecentWorks/RecentWorks.jsx'
 import ProjectSection from './sections/ProjectSection/ProjectSection.jsx'
+import logos from '../../config/logos.js'
 
-// LOGHI: quando li hai, mettili in src/assets/logos/ e importali qui, ad esempio:
-//   import radiciLogo from '../../assets/logos/radici.svg'
-//   import addettiLogo from '../../assets/logos/addetti-ai-lavori.svg'
-// poi passali sotto con  logo={radiciLogo}  e  logo={addettiLogo}
+// I loghi di Radici e Addetti ai lavori si impostano in src/config/logos.js
 export default function Home() {
   return (
     <>
@@ -16,14 +14,14 @@ export default function Home() {
         title="Radici"
         description="Il progetto nato dalla collaborazione tra Menologaritmo e Radici."
         to="/radici"
-        logo={null}
+        logo={logos.radici}
       />
       <ProjectSection
         id="addetti-ai-lavori"
         title="Addetti ai lavori"
         description="Lo spazio dedicato a chi lavora nella musica, dietro e davanti al palco."
         to="/addetti-ai-lavori"
-        logo={null}
+        logo={logos.addettiAiLavori}
         tone="alt"
       />
     </>

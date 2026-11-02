@@ -1,15 +1,37 @@
 import { Link } from 'react-router'
+import logos from '../../config/logos.js'
 import './Header.css'
 
-// Logo: per ora è un placeholder testuale.
-// Quando hai il file, mettilo in src/assets/logos/menologaritmo.svg
-// e sostituisci lo <span> con: <img src={logo} alt="Menologaritmo" />
-export default function Header() {
+function Logo({ src, name }) {
+  return src ? (
+    <img className="header__logo-image" src={src} alt={name} />
+  ) : (
+    <span className="header__logo-placeholder">{name.toUpperCase()}</span>
+  )
+}
+
+// Logo Menologaritmo al centro. Se c'è un partner (es. pagina Radici)
+// mostra la collaborazione: Menologaritmo × Partner.
+// I file dei loghi si impostano in src/config/logos.js
+export default function Header({ partner }) {
   return (
     <header className="header">
-      <Link to="/" className="header__logo" aria-label="Menologaritmo, home">
-        <span className="header__logo-placeholder">MENOLOGARITMO</span>
-      </Link>
+      <div className="header__logos">
+        <Link to="/" className="header__logo" aria-label="Menologaritmo, torna alla home">
+          <Logo src={logos.menologaritmo} name="Menologaritmo" />
+        </Link>
+
+        {partner && (
+          <>
+            <span className="header__times" aria-hidden="true">
+              ×
+            </span>
+            <span className="header__logo">
+              <Logo src={partner.logo} name={partner.name} />
+            </span>
+          </>
+        )}
+      </div>
     </header>
   )
 }

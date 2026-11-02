@@ -14,6 +14,7 @@
   --color-bg-alt: #f5f5f7;
   --color-surface: #e8e8ed;
   --color-text: #1d1d1f;
+  --color-ink: #000000; /* linee dei disegni */
   --color-text-muted: #6e6e73;
   --color-border: rgb(0 0 0 / 0.1);
   --color-border-strong: rgb(0 0 0 / 0.35);
@@ -47,6 +48,7 @@
     --color-bg-alt: #111112;
     --color-surface: #232325;
     --color-text: #f5f5f7;
+    --color-ink: #ffffff;
     --color-text-muted: #a1a1a6;
     --color-border: rgb(255 255 255 / 0.12);
     --color-border-strong: rgb(255 255 255 / 0.4);

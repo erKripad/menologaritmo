@@ -1,0 +1,151 @@
+/* Disegno solo a linee: nere col tema chiaro, bianche col tema scuro (--color-ink) */
+.growing-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--color-ink);
+}
+
+.growing-tree__scene {
+  display: block;
+  width: min(440px, 90vw, calc(66svh * 400 / 550));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: none;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.growing-tree__scene:disabled {
+  cursor: default;
+}
+
+.growing-tree__canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 400 / 550;
+  color: inherit;
+}
+
+/* Sotto la scena: suggerimento + avanzamento, poi "Coming soon" nello stesso spazio */
+.growing-tree__footer {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  width: min(520px, 90vw);
+  min-height: clamp(72px, 12vw, 104px);
+}
+
+.growing-tree__footer > * {
+  grid-area: 1 / 1;
+}
+
+.growing-tree__hint {
+  align-self: start;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  transition: opacity 500ms;
+}
+
+.growing-tree__progress {
+  display: flex;
+  gap: 10px;
+  align-self: end;
+  margin-bottom: 8px;
+  transition: opacity 500ms;
+}
+
+.water-circle {
+  width: 24px;
+  height: 24px;
+  overflow: visible;
+}
+
+.water-circle__ring {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.4;
+  opacity: 0.5;
+  transition: opacity 400ms;
+}
+
+.water-circle--filling .water-circle__ring,
+.water-circle--full .water-circle__ring {
+  opacity: 1;
+}
+
+.water-circle__wave {
+  fill: var(--color-ink);
+  animation: water-wave 1600ms linear infinite;
+}
+
+/* Livello dell'acqua: vuoto = sotto il cerchio, pieno = sopra */
+.water-circle__level {
+  transform: translateY(22px);
+}
+
+.water-circle--filling .water-circle__level {
+  animation: water-rise var(--fill-duration, 4s) cubic-bezier(0.45, 0, 0.35, 1) forwards;
+}
+
+.water-circle--full .water-circle__level {
+  transform: translateY(-2px);
+}
+
+.water-circle--full .water-circle__wave {
+  animation-play-state: paused;
+}
+
+@keyframes water-rise {
+  from {
+    transform: translateY(22px);
+  }
+
+  to {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes water-wave {
+  to {
+    transform: translateX(12px);
+  }
+}
+
+.is-done .growing-tree__hint,
+.is-done .growing-tree__progress {
+  opacity: 0;
+}
+
+.growing-tree__soon {
+  width: 100%;
+  overflow: visible;
+  visibility: hidden;
+}
+
+.growing-tree__soon text {
+  font-family: var(--font-sans);
+  font-size: 76px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+}
+
+.is-done .growing-tree__soon {
+  visibility: visible;
+}
+
+.is-done .growing-tree__soon text {
+  animation: tree-soon 2800ms var(--ease-out) 700ms forwards;
+}
+
+@keyframes tree-soon {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

@@ -13,11 +13,36 @@
   transition: background-color 300ms;
 }
 
+.header__logos {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: header-in 700ms var(--ease-out) both;
+}
+
 .header__logo {
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 0 16px;
+  padding: 0 12px;
+}
+
+.header__logo-image {
+  height: 24px;
+  width: auto;
+}
+
+.header__times {
+  font-size: 0.875rem;
+  font-weight: 300;
+  color: var(--color-text-muted);
+}
+
+@keyframes header-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
 
 .header__logo-placeholder {
@@ -27,7 +52,16 @@
 }
 
 @media (max-width: 734px) {
+  .header__logo {
+    padding: 0 8px;
+  }
+
   .header__logo-placeholder {
     font-size: 0.75rem;
+    letter-spacing: 0.16em;
+  }
+
+  .header__logo-image {
+    height: 20px;
   }
 }
