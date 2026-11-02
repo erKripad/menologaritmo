@@ -1,0 +1,137 @@
+.carousel {
+  --card-width: min(1000px, 80vw);
+  --gap: clamp(12px, 1.8vw, 24px);
+}
+
+.carousel__viewport {
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.carousel__track {
+  display: flex;
+  gap: var(--gap);
+  margin: 0;
+  padding: 0 calc((100% - var(--card-width)) / 2);
+  list-style: none;
+  transform: translateX(calc(var(--position) * (var(--card-width) + var(--gap)) * -1));
+}
+
+.carousel__track--animated {
+  transition: transform 900ms var(--ease-out);
+}
+
+.carousel__slide {
+  flex: 0 0 var(--card-width);
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 900ms var(--ease-out);
+}
+
+.carousel__slide--active {
+  opacity: 1;
+  cursor: default;
+}
+
+.carousel__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: clamp(20px, 3vw, 32px);
+}
+
+.carousel__dots {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  min-height: 44px;
+  border-radius: 999px;
+  background: var(--color-surface);
+}
+
+.carousel__dot {
+  display: grid;
+  place-items: center;
+  height: 44px;
+  padding: 0 5px;
+  border: 0;
+  background: none;
+}
+
+.carousel__dot-bar {
+  position: relative;
+  display: block;
+  width: 8px;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-dot);
+  transition: width 500ms var(--ease-out);
+}
+
+.carousel__dot:hover .carousel__dot-bar {
+  background: var(--color-text-muted);
+}
+
+.carousel__dot--active .carousel__dot-bar {
+  width: 40px;
+}
+
+.carousel__dot-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--color-text);
+  transform-origin: left center;
+}
+
+.carousel__dot-fill--running {
+  animation: carousel-progress var(--interval) linear forwards;
+}
+
+.carousel__play {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-surface);
+  transition: transform 300ms var(--ease-out);
+}
+
+.carousel__play:active {
+  transform: scale(0.92);
+}
+
+.carousel__play svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+@keyframes carousel-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Tablet */
+@media (max-width: 1068px) {
+  .carousel {
+    --card-width: 84vw;
+  }
+}
+
+/* Cellulare */
+@media (max-width: 734px) {
+  .carousel {
+    --card-width: 86vw;
+  }
+}

@@ -1,0 +1,7 @@
+.recent-works__header {
+  margin-bottom: clamp(32px, 5vw, 64px);
+}
+
+.recent-works__header .title-section {
+  margin-top: 12px;
+}

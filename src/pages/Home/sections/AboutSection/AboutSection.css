@@ -1,0 +1,97 @@
+.about {
+  overflow: hidden;
+}
+
+.about__curve {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  clip-path: inset(0 100% 0 0);
+  animation: about-draw 3200ms var(--ease-out) 300ms forwards;
+}
+
+.about__curve path {
+  fill: none;
+  stroke: var(--color-line);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.about__content {
+  position: relative;
+}
+
+.about__title {
+  margin-top: 12px;
+}
+
+.about__lead {
+  margin-top: 24px;
+}
+
+.about__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.about__scroll-hint {
+  position: absolute;
+  bottom: clamp(16px, 4vh, 40px);
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--color-text-muted);
+  translate: -50% 0;
+  animation: about-bounce 2400ms ease-in-out infinite;
+}
+
+.about__scroll-hint svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes about-draw {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes about-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+/* Cellulare: bottoni uno sotto l'altro, a tutta larghezza */
+@media (max-width: 734px) {
+  .about__actions {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 320px;
+    margin-inline: auto;
+  }
+}
+
+/* Schermi bassi (es. cellulare in orizzontale): niente freccia */
+@media (max-height: 500px) {
+  .about__scroll-hint {
+    display: none;
+  }
+}

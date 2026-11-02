@@ -1,0 +1,76 @@
+.work-card {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: #111;
+  color: #fff;
+}
+
+.work-card__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1400ms var(--ease-out);
+}
+
+/* Placeholder in bianco e nero finché non ci sono le foto: una "luce di scena" in posizioni diverse */
+.work-card__placeholder {
+  --light-x: 70%;
+  --light-y: 30%;
+  background:
+    radial-gradient(circle at var(--light-x) var(--light-y), #5a5a5d 0%, transparent 55%),
+    radial-gradient(circle at calc(100% - var(--light-x)) 100%, #2a2a2c 0%, transparent 50%),
+    linear-gradient(160deg, #1d1d1f, #000);
+}
+
+.work-card__placeholder--1 {
+  --light-x: 25%;
+  --light-y: 20%;
+}
+
+.work-card__placeholder--2 {
+  --light-x: 50%;
+  --light-y: 0%;
+}
+
+.work-card__placeholder--3 {
+  --light-x: 85%;
+  --light-y: 70%;
+}
+
+.work-card__placeholder--4 {
+  --light-x: 15%;
+  --light-y: 75%;
+}
+
+.carousel__slide--active .work-card__media {
+  transform: scale(1.04);
+}
+
+.work-card__overlay {
+  position: absolute;
+  inset: auto 0 0;
+  padding: clamp(20px, 4vw, 48px);
+  background: linear-gradient(to top, rgb(0 0 0 / 0.75), transparent);
+  text-align: left;
+}
+
+.work-card__meta {
+  font-size: var(--text-eyebrow);
+  color: rgb(255 255 255 / 0.75);
+}
+
+.work-card__title {
+  margin-top: 6px;
+  font-size: var(--text-h3);
+}
+
+/* Cellulare: card verticali come su apple.com */
+@media (max-width: 734px) {
+  .work-card {
+    aspect-ratio: 4 / 5;
+  }
+}
