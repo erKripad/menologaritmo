@@ -1,0 +1,19 @@
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--header-height);
+  background: rgb(255 255 255 / 0.8);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgb(0 0 0 / 0.06);
+}
+
+.header__logo-placeholder {
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  font-size: 0.875rem;
+}

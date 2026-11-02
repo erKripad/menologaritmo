@@ -1,0 +1,24 @@
+# Istruzioni e log per Claude Code (mai nei commit)
+/claude-code/
+
+# Dipendenze e build
+node_modules
+dist
+dist-ssr
+*.local
+
+# Log
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor e sistema
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.sw?
