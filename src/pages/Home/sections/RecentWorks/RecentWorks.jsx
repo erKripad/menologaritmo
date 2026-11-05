@@ -11,15 +11,12 @@ export default function RecentWorks() {
   return (
     <Section id="lavori-recenti" tone="alt" className="recent-works" aria-labelledby="lavori-recenti-title">
       <div className="container recent-works__header">
-        <Reveal as="p" className="eyebrow">
-          Lavori recenti
-        </Reveal>
-        <Reveal as="h2" id="lavori-recenti-title" className="title-section" delay={100}>
+        <Reveal as="h2" id="lavori-recenti-title" className="title-section">
           Sul palco, di recente.
         </Reveal>
       </div>
 
-      <Reveal delay={200} aria-busy={status === 'loading'}>
+      <Reveal delay={100} aria-busy={status === 'loading'}>
         {status === 'empty' ? (
           <p className="container recent-works__empty">Le foto dei prossimi concerti arriveranno presto.</p>
         ) : (

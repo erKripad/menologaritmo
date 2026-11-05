@@ -1,4 +1,4 @@
-import { listFolderImages, readConfig, resolveSubfolder } from '../lib/googleDrive.js'
+import { ALLOWED_IMAGE_TYPES, listFolderFiles, readConfig, resolveSubfolder } from '../lib/googleDrive.js'
 import { DRIVE_FOLDERS } from '../driveFolders.js'
 import { workFromFileName } from '../lib/workFromFileName.js'
 
@@ -24,15 +24,21 @@ export async function handleWorks(request, env, ctx) {
   try {
     const config = readConfig(env)
     const folderId = await resolveSubfolder(config, DRIVE_FOLDERS.recentWorks)
-    const files = await listFolderImages(config, folderId)
+    const files = await listFolderFiles(config, folderId)
+    console.log(`${DRIVE_FOLDERS.recentWorks}: ${files.length} file trovati`)
 
     const works = []
     for (const file of files) {
-      const work = workFromFileName(file.name)
-      if (!work) {
-        console.warn(`Skipped file with invalid name: "${file.name}"`)
+      if (!ALLOWED_IMAGE_TYPES.includes(file.mimeType)) {
+        console.warn(`Scartato "${file.name}": formato ${file.mimeType} non supportato (solo JPG, PNG, WebP, AVIF)`)
         continue
       }
+      const work = workFromFileName(file.name)
+      if (!work) {
+        console.warn(`Scartato "${file.name}": nome non nel formato "AAAA-MM-GG - Artista - Locale, Città.jpg"`)
+        continue
+      }
+      console.log(`Mostrato "${file.name}"`)
       works.push({
         id: file.id,
         ...work,

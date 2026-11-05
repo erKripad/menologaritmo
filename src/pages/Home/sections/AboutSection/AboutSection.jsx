@@ -20,17 +20,14 @@ export default function AboutSection() {
       </svg>
 
       <div className="container about__content">
-        <Reveal as="p" className="eyebrow">
-          Chi siamo
-        </Reveal>
-        <Reveal as="h1" id="chi-siamo-title" className="title-hero about__title" delay={100}>
+        <Reveal as="h1" id="chi-siamo-title" className="title-hero">
           Menologaritmo
         </Reveal>
-        <Reveal as="p" className="lead about__lead" delay={250}>
+        <Reveal as="p" className="lead about__lead" delay={150}>
           Un progetto indipendente che porta sul palco artisti musicali emergenti, li aiuta a farsi conoscere dal
           pubblico e a vivere le loro prime esperienze dal vivo.
         </Reveal>
-        <Reveal className="about__actions" delay={400}>
+        <Reveal className="about__actions" delay={300}>
           <Button href={CONTACT_MAILTO}>Scrivici</Button>
           <Button href="#lavori-recenti" variant="secondary">
             Lavori recenti

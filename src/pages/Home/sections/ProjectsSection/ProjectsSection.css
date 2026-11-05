@@ -37,14 +37,11 @@
   width: clamp(140px, 30vw, 340px);
   aspect-ratio: 1;
   border-radius: 50%;
-  transition:
-    transform 600ms var(--ease-out),
-    box-shadow 600ms var(--ease-out);
+  transition: transform 600ms var(--ease-out);
 }
 
 .projects__logo:hover {
   transform: scale(1.05);
-  box-shadow: var(--shadow-lift);
 }
 
 .projects__logo:active {

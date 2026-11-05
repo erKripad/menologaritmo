@@ -21,7 +21,6 @@
   --color-line: rgb(0 0 0 / 0.14);
   --color-header-bg: rgb(255 255 255 / 0.72);
   --color-dot: rgb(0 0 0 / 0.25);
-  --shadow-lift: 0 24px 60px rgb(0 0 0 / 0.14);
 
   --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
@@ -55,7 +54,6 @@
     --color-line: rgb(255 255 255 / 0.18);
     --color-header-bg: rgb(0 0 0 / 0.72);
     --color-dot: rgb(255 255 255 / 0.3);
-    --shadow-lift: 0 24px 60px rgb(255 255 255 / 0.08);
   }
 }
 

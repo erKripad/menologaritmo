@@ -184,9 +184,8 @@ export async function resolveSubfolder(config, name) {
   return folders[0].id
 }
 
-export async function listFolderImages(config, folderId) {
-  const mimeFilter = ALLOWED_IMAGE_TYPES.map((type) => `mimeType = '${type}'`).join(' or ')
-  const query = `'${folderId}' in parents and trashed = false and (${mimeFilter})`
+export async function listFolderFiles(config, folderId) {
+  const query = `'${folderId}' in parents and trashed = false and mimeType != '${FOLDER_MIME_TYPE}'`
   const files = await listFiles(config, query, 'id, name, mimeType, modifiedTime, parents')
   return files.filter((file) => file.parents?.includes(folderId))
 }
