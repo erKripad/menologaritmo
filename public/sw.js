@@ -1,4 +1,4 @@
-const CACHE_NAME = 'menologaritmo-offline-v1'
+const CACHE_NAME = 'menologaritmo-offline-v2'
 const OFFLINE_URL = '/offline.html'
 
 async function cacheOfflinePage() {
@@ -31,6 +31,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.mode !== 'navigate') return
+  if (new URL(event.request.url).pathname.startsWith('/api/')) return
 
   event.respondWith(
     fetch(event.request)

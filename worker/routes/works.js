@@ -46,7 +46,11 @@ export async function handleWorks(request, env, ctx) {
     return response
   } catch (error) {
     console.error(error)
-    return json({ error: 'Impossibile caricare i lavori recenti' }, 502, 'no-store')
+    return json(
+      { error: 'Impossibile caricare i lavori recenti', reason: error.reason ?? 'unknown', detail: error.detail ?? null },
+      502,
+      'no-store',
+    )
   }
 }
 

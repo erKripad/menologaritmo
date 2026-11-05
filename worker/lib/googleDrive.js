@@ -8,17 +8,35 @@ const ID_PATTERN = /^[A-Za-z0-9_-]{10,200}$/
 
 let cachedToken = null
 
+export class DriveError extends Error {
+  constructor(reason, detail, message) {
+    super(message ?? `${reason}: ${detail}`)
+    this.reason = reason
+    this.detail = detail
+  }
+}
+
 export function isValidDriveId(id) {
   return typeof id === 'string' && ID_PATTERN.test(id)
 }
 
+function folderIdFrom(value) {
+  const text = value?.trim()
+  if (!text) return text
+  return text.match(/folders\/([A-Za-z0-9_-]+)/)?.[1] ?? text.split('?')[0]
+}
+
 export function readConfig(env) {
-  const folderId = env.DRIVE_FOLDER_ID
+  const folderId = folderIdFrom(env.DRIVE_FOLDER_ID)
   const clientEmail = env.GOOGLE_CLIENT_EMAIL
   const privateKey = env.GOOGLE_PRIVATE_KEY
-  if (!isValidDriveId(folderId) || !clientEmail || !privateKey) {
-    throw new Error('Missing or invalid DRIVE_FOLDER_ID, GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY')
-  }
+  const problems = [
+    !folderId && 'DRIVE_FOLDER_ID mancante',
+    folderId && !isValidDriveId(folderId) && 'DRIVE_FOLDER_ID non valido',
+    !clientEmail && 'GOOGLE_CLIENT_EMAIL mancante',
+    !privateKey && 'GOOGLE_PRIVATE_KEY mancante',
+  ].filter(Boolean)
+  if (problems.length) throw new DriveError('config', problems.join(', '))
   return { folderId, clientEmail, privateKey }
 }
 
@@ -32,13 +50,29 @@ function base64UrlFromJson(value) {
   return base64UrlFromBytes(new TextEncoder().encode(JSON.stringify(value)))
 }
 
-async function importPrivateKey(pem) {
-  const body = pem
+function extractPem(value) {
+  const trimmed = value.trim().replace(/^"|"$/g, '')
+  if (!trimmed.startsWith('{')) return trimmed
+  try {
+    return JSON.parse(trimmed).private_key ?? ''
+  } catch {
+    return trimmed
+  }
+}
+
+async function importPrivateKey(value) {
+  const body = extractPem(value)
     .replace(/\\n/g, '\n')
     .replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----/g, '')
     .replace(/\s+/g, '')
-  const der = Uint8Array.from(atob(body), (char) => char.charCodeAt(0))
-  return crypto.subtle.importKey('pkcs8', der, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign'])
+  try {
+    const der = Uint8Array.from(atob(body), (char) => char.charCodeAt(0))
+    return await crypto.subtle.importKey('pkcs8', der, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, [
+      'sign',
+    ])
+  } catch {
+    throw new DriveError('key', 'GOOGLE_PRIVATE_KEY non è una chiave privata valida')
+  }
 }
 
 async function createSignedJwt({ clientEmail, privateKey }) {
@@ -64,7 +98,11 @@ async function getAccessToken(config) {
       assertion: await createSignedJwt(config),
     }),
   })
-  if (!response.ok) throw new Error(`Google token request failed: ${response.status} ${await response.text()}`)
+  if (!response.ok) {
+    const text = await response.text()
+    const code = text.match(/"error"\s*:\s*"([a-z_]+)"/)?.[1] ?? `HTTP ${response.status}`
+    throw new DriveError('auth', code, `Google token request failed: ${response.status} ${text}`)
+  }
 
   const data = await response.json()
   cachedToken = {
@@ -82,7 +120,24 @@ async function driveFetch(config, path, params) {
   return fetch(url, { headers: { Authorization: `Bearer ${token}` } })
 }
 
+async function assertFolderReadable(config) {
+  const response = await driveFetch(config, `/${config.folderId}`, { fields: 'id, mimeType, trashed' })
+  if (response.status === 404) {
+    throw new DriveError('drive', 'cartella non trovata o non condivisa con GOOGLE_CLIENT_EMAIL')
+  }
+  if (!response.ok) {
+    const text = await response.text()
+    const code = text.match(/"reason"\s*:\s*"([A-Za-z_]+)"/)?.[1] ?? 'unknown'
+    throw new DriveError('drive', `HTTP ${response.status} ${code}`, `Drive folder check failed: ${response.status} ${text}`)
+  }
+  const folder = await response.json()
+  if (folder.mimeType !== 'application/vnd.google-apps.folder' || folder.trashed) {
+    throw new DriveError('drive', 'DRIVE_FOLDER_ID non è una cartella (o è nel cestino)')
+  }
+}
+
 export async function listFolderImages(config) {
+  await assertFolderReadable(config)
   const mimeFilter = ALLOWED_IMAGE_TYPES.map((type) => `mimeType = '${type}'`).join(' or ')
   const query = `'${config.folderId}' in parents and trashed = false and (${mimeFilter})`
   const files = []
@@ -96,7 +151,11 @@ export async function listFolderImages(config) {
       includeItemsFromAllDrives: 'true',
       ...(pageToken ? { pageToken } : {}),
     })
-    if (!response.ok) throw new Error(`Drive list failed: ${response.status} ${await response.text()}`)
+    if (!response.ok) {
+      const text = await response.text()
+      const code = text.match(/"reason"\s*:\s*"([A-Za-z_]+)"/)?.[1] ?? 'unknown'
+      throw new DriveError('drive', `HTTP ${response.status} ${code}`, `Drive list failed: ${response.status} ${text}`)
+    }
     const data = await response.json()
     files.push(...data.files)
     pageToken = data.nextPageToken
