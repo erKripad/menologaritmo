@@ -1,9 +1,8 @@
 import Section from '../../../../components/Section/Section.jsx'
 import Button from '../../../../components/Button/Button.jsx'
 import Reveal from '../../../../components/Reveal/Reveal.jsx'
+import { CONTACT_MAILTO } from '../../../../config/contacts.js'
 import './AboutSection.css'
-
-const CONTACT_EMAIL = 'menologaritmo@gmail.com'
 
 // Curva decorativa di y = -log(x), in omaggio al nome. Viene "disegnata" all'apertura.
 const CURVE_PATH = Array.from({ length: 121 }, (_, i) => {
@@ -32,7 +31,7 @@ export default function AboutSection() {
           pubblico e a vivere le loro prime esperienze dal vivo.
         </Reveal>
         <Reveal className="about__actions" delay={400}>
-          <Button href={`mailto:${CONTACT_EMAIL}`}>Scrivici</Button>
+          <Button href={CONTACT_MAILTO}>Scrivici</Button>
           <Button href="#lavori-recenti" variant="secondary">
             Lavori recenti
           </Button>

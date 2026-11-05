@@ -1,10 +1,15 @@
 import { Link } from 'react-router'
 import logos from '../../config/logos.js'
+import LogoMark from '../LogoMark/LogoMark.jsx'
 import './Header.css'
 
-function Logo({ src, name }) {
+function Logo({ src, name, isPartner = false }) {
   return src ? (
-    <img className="header__logo-image" src={src} alt={name} />
+    <LogoMark
+      src={src}
+      alt={name}
+      imgClassName={isPartner ? 'header__logo-image header__logo-image--partner' : 'header__logo-image'}
+    />
   ) : (
     <span className="header__logo-placeholder">{name.toUpperCase()}</span>
   )
@@ -27,7 +32,7 @@ export default function Header({ partner }) {
               ×
             </span>
             <span className="header__logo">
-              <Logo src={partner.logo} name={partner.name} />
+              <Logo src={partner.logo} name={partner.name} isPartner />
             </span>
           </>
         )}

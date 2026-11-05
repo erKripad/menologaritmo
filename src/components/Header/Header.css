@@ -32,6 +32,11 @@
   width: auto;
 }
 
+/* I loghi partner hanno lettere più alte e pesanti: un po' più bassi per bilanciarli */
+.header__logo-image--partner {
+  height: 20px;
+}
+
 .header__times {
   font-size: 0.875rem;
   font-weight: 300;
@@ -63,5 +68,9 @@
 
   .header__logo-image {
     height: 20px;
+  }
+
+  .header__logo-image--partner {
+    height: 16px;
   }
 }
