@@ -1,0 +1,5 @@
+# Copia questo file come ".dev.vars" (mai nei commit) e compila i valori.
+# Servono solo per provare l'API in locale con "npm run dev:api" (wrangler dev).
+DRIVE_FOLDER_ID="id-della-cartella-website"
+GOOGLE_CLIENT_EMAIL="nome@progetto.iam.gserviceaccount.com"
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"

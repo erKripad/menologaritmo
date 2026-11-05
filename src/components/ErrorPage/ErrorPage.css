@@ -1,0 +1,24 @@
+.error-page__title {
+  margin-top: 12px;
+}
+
+.error-page__lead {
+  margin-top: 24px;
+}
+
+.error-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+@media (max-width: 734px) {
+  .error-page__actions {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 320px;
+    margin-inline: auto;
+  }
+}

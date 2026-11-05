@@ -1,11 +1,6 @@
-// Dati dei lavori recenti mostrati nel carosello della Home.
-// Tutti i valori sono PLACEHOLDER da sostituire.
-//
-// Per aggiungere una foto:
-// 1. metti l'immagine in src/assets/works/ (es. artista-01.jpg, formato orizzontale 16:9)
-// 2. importala qui:  import artista01 from '../../../../assets/works/artista-01.jpg'
-// 3. imposta  image: artista01  nella voce corrispondente
-const recentWorks = [
+// Lavori finti, usati solo con "npm run dev" quando l'API di Google Drive non è attiva.
+// Sul sito pubblicato i lavori arrivano dalla cartella "website" di Google Drive (vedi /api/works).
+const placeholderWorks = [
   { id: 'lavoro-1', artist: 'Nome artista', venue: 'Locale, Città', date: 'Mese 2026', image: null },
   { id: 'lavoro-2', artist: 'Nome artista', venue: 'Locale, Città', date: 'Mese 2026', image: null },
   { id: 'lavoro-3', artist: 'Nome artista', venue: 'Locale, Città', date: 'Mese 2026', image: null },
@@ -13,4 +8,4 @@ const recentWorks = [
   { id: 'lavoro-5', artist: 'Nome artista', venue: 'Locale, Città', date: 'Mese 2026', image: null },
 ]
 
-export default recentWorks
+export default placeholderWorks

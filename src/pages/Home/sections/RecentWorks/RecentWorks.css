@@ -5,3 +5,8 @@
 .recent-works__header .title-section {
   margin-top: 12px;
 }
+
+.recent-works__empty {
+  color: var(--color-text-muted);
+  font-size: var(--text-lead);
+}

@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Server non raggiungibile · Menologaritmo</title>
+    <meta name="robots" content="noindex" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%223.745 18.32 98 98%22%3E %3Cstyle%3E path %7B fill: %23000; %7D %40media (prefers-color-scheme: dark) %7B path %7B fill: %23fff; %7D %7D %3C/style%3E %3Cpath d=%22M62.1,60.99l-.02,37.48h-18.65s-.09-38.48-.09-38.48c-.01-4.9-4.21-8.15-8.77-8.01-5.59.18-8.7,4.32-8.78,9.87v36.62s-19.38,0-19.38,0v-61.38s17.97,0,17.97,0l.75,11.52c3.56-8.19,9.83-12.69,18.77-12.43,5,.15,9.35,2.48,12.12,6.61,1.43,2.13,2.3,4.37,3.29,6.96,2.43-6.84,7.96-11.7,15.04-13.1,9.51-1.87,18.81,1.56,22.82,10.55,1.21,2.7,1.7,5.38,1.91,8.43v42.85s-19.37,0-19.37,0v-38.27c-.35-4.89-3.88-8.24-8.72-8.21-2.87.02-5.62,1.09-7.21,3.57-.97,1.52-1.68,3.33-1.68,5.43Z%22/%3E %3C/svg%3E" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --color-bg: #ffffff;
+        --color-bg-alt: #f5f5f7;
+        --color-text: #1d1d1f;
+        --color-text-muted: #6e6e73;
+        --color-border: rgb(0 0 0 / 0.1);
+        --color-line: rgb(0 0 0 / 0.14);
+        --color-header-bg: rgb(255 255 255 / 0.72);
+        --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        --text-hero: clamp(3rem, 1.6rem + 6.4vw, 6.5rem);
+        --text-lead: clamp(1.125rem, 1rem + 0.6vw, 1.625rem);
+        --text-eyebrow: clamp(0.8125rem, 0.78rem + 0.2vw, 0.9375rem);
+        --header-height: 56px;
+        --gutter: clamp(16px, 5vw, 48px);
+        --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color-bg: #000000;
+          --color-bg-alt: #111112;
+          --color-text: #f5f5f7;
+          --color-text-muted: #a1a1a6;
+          --color-border: rgb(255 255 255 / 0.12);
+          --color-line: rgb(255 255 255 / 0.18);
+          --color-header-bg: rgb(0 0 0 / 0.72);
+        }
+      }
+
+      @media (max-width: 734px) {
+        :root {
+          --header-height: 48px;
+        }
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+        overflow-x: hidden;
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-sans);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      h1,
+      p {
+        margin: 0;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        font: inherit;
+        cursor: pointer;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--color-text);
+        outline-offset: 3px;
+      }
+
+      .header {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: var(--header-height);
+        background: var(--color-header-bg);
+        backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .header__logo {
+        display: block;
+        height: 24px;
+        width: auto;
+        fill: var(--color-text);
+      }
+
+      main {
+        position: relative;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100svh;
+        padding: calc(var(--header-height) + 64px) var(--gutter) 64px;
+        overflow: hidden;
+        text-align: center;
+      }
+
+      .curve {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        clip-path: inset(0 100% 0 0);
+        animation: draw 3200ms var(--ease-out) 300ms forwards;
+      }
+
+      .curve path {
+        fill: none;
+        stroke: var(--color-line);
+        stroke-width: 1.5;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .content {
+        position: relative;
+      }
+
+      .eyebrow {
+        font-size: var(--text-eyebrow);
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+      }
+
+      .title {
+        margin-top: 12px;
+        font-size: var(--text-hero);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+      }
+
+      .lead {
+        max-width: 38ch;
+        margin: 24px auto 0;
+        font-size: var(--text-lead);
+        line-height: 1.4;
+        color: var(--color-text-muted);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 40px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 24px;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        font-size: 1.0625rem;
+        font-weight: 500;
+        white-space: nowrap;
+        transition:
+          background-color 250ms,
+          color 250ms,
+          opacity 250ms,
+          transform 300ms var(--ease-out);
+      }
+
+      .button:active {
+        transform: scale(0.96);
+      }
+
+      .button--primary {
+        background: var(--color-text);
+        color: var(--color-bg);
+      }
+
+      .button--primary:hover {
+        opacity: 0.82;
+      }
+
+      .button--secondary {
+        border-color: var(--color-text);
+        background: transparent;
+        color: var(--color-text);
+      }
+
+      .button--secondary:hover {
+        background: var(--color-text);
+        color: var(--color-bg);
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(36px);
+        animation: reveal 1000ms var(--ease-out) var(--delay, 0ms) forwards;
+      }
+
+      .footer {
+        border-top: 1px solid var(--color-border);
+        background: var(--color-bg-alt);
+        color: var(--color-text-muted);
+        font-size: 0.75rem;
+      }
+
+      .footer p {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 24px var(--gutter);
+      }
+
+      @keyframes reveal {
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      @keyframes draw {
+        to {
+          clip-path: inset(0 0 0 0);
+        }
+      }
+
+      @media (max-width: 734px) {
+        .header__logo {
+          height: 20px;
+        }
+
+        .actions {
+          flex-direction: column;
+          align-items: stretch;
+          max-width: 320px;
+          margin-inline: auto;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .reveal,
+        .curve {
+          animation: none;
+          opacity: 1;
+          transform: none;
+          clip-path: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <a href="/" aria-label="Menologaritmo, torna alla home">
+        <svg class="header__logo" viewBox="0 0 820.8 137.28" role="img" aria-label="Menologaritmo"><path d="M62.1,60.99l-.02,37.48h-18.65s-.09-38.48-.09-38.48c-.01-4.9-4.21-8.15-8.77-8.01-5.59.18-8.7,4.32-8.78,9.87v36.62s-19.38,0-19.38,0v-61.38s17.97,0,17.97,0l.75,11.52c3.56-8.19,9.83-12.69,18.77-12.43,5,.15,9.35,2.48,12.12,6.61,1.43,2.13,2.3,4.37,3.29,6.96,2.43-6.84,7.96-11.7,15.04-13.1,9.51-1.87,18.81,1.56,22.82,10.55,1.21,2.7,1.7,5.38,1.91,8.43v42.85s-19.37,0-19.37,0v-38.27c-.35-4.89-3.88-8.24-8.72-8.21-2.87.02-5.62,1.09-7.21,3.57-.97,1.52-1.68,3.33-1.68,5.43Z"/> <path d="M707.27,60.99l-.02,37.48h-18.65s-.09-38.48-.09-38.48c-.01-4.9-4.21-8.15-8.77-8.01-5.59.18-8.7,4.32-8.78,9.87v36.62s-19.38,0-19.38,0v-61.38s17.97,0,17.97,0l.75,11.52c3.56-8.19,9.83-12.69,18.77-12.43,5,.15,9.35,2.48,12.12,6.61,1.43,2.13,2.3,4.37,3.29,6.96,2.43-6.84,7.96-11.7,15.04-13.1,9.51-1.87,18.81,1.56,22.82,10.55,1.21,2.7,1.7,5.38,1.91,8.43v42.85s-19.37,0-19.37,0v-38.27c-.35-4.89-3.88-8.24-8.72-8.21-2.87.02-5.62,1.09-7.21,3.57-.97,1.52-1.68,3.33-1.68,5.43Z"/> <path d="M421.5,103.16c1.05,2.53,2.86,4.21,5.36,5.15,5.01,1.89,12.9,1.56,16.13-2.81,1.33-1.79,2.03-4.03,2.04-6.31l.05-11.43-1.1.07c-3.15,7.16-9.4,9.98-17.16,9.94-12.88-.07-21.69-8.73-23.98-21.1-1.12-6.05-1.07-12.16-.02-18.21,2.24-12.98,11.8-22.9,25.46-22.21,4.18.12,7.99,1.46,11.18,4.09,2.36,1.94,3.76,4.25,5.53,7.1l.09-10.36h19.18s-.03,60.86-.03,60.86c0,3.73-.8,7.18-2.28,10.47-6.14,13.63-24.18,16.13-37.77,13.79-9.2-1.58-17.73-6.79-19.89-16.31l17.2-2.73ZM433.9,83.34c8.38-.31,11.31-8.08,11.31-15.77,0-3.77-.57-7.42-2.37-10.66-1.96-3.52-5.27-5.57-9.28-5.6-4.32-.03-7.81,2.3-9.66,6.19-2.59,5.46-2.68,13.9-.24,19.4,1.84,4.15,5.57,6.61,10.24,6.43Z"/> <path d="M470.97,85.56c-1.24-7.64.57-14.95,7.35-19.06,6.09-3.68,11.05-3.65,17.11-4.51l9-1.28c1.3-.19,2.94-.99,3.49-2.24,1.4-3.19-.49-6.67-3.68-7.83-3.21-1-6.6-.89-9.64.45-2.2,1.13-3.82,2.89-4.36,5.35l-17.72-1.79c1.73-9.47,9.18-15.64,18.6-17.54s21.65-1.11,29.47,4.91c4.18,3.21,7.07,8.05,7.08,13.5l.08,42.95h-18.41s-.14-8.87-.14-8.87c-2.73,4.83-6.48,8.03-11.7,9.26-10.98,2.58-24.55-1.18-26.52-13.31ZM493.44,86.24c3.97,1.17,8.26.42,11.41-2.07,2.36-1.86,3.69-4.52,3.68-7.5l-.02-5.74-9.8,2.27c-2.35.55-4.71.84-6.74,2.11-2.14,1.34-3.18,3.62-2.85,6.05.3,2.2,1.85,4.14,4.33,4.87Z"/> <path d="M203.1,52.27c-6.64-.12-10.55,4.78-10.55,11.26v34.94s-19.38,0-19.38,0v-61.39s18.44,0,18.44,0l.25,11.96c1.25-2.23,2.29-4.13,3.83-6.01,2.61-3.28,6.08-5.49,10.23-6.32,9.58-1.82,18.9,1.08,23.58,9.89,2.05,3.86,2.8,7.92,2.93,12.37v39.5s-19.43,0-19.43,0v-36c-.38-6.09-3.52-10.09-9.9-10.2Z"/> <path d="M260.11,98.31c-8.77-2.48-15.36-8.76-18.5-17.09-2.94-7.78-2.98-18.04-.24-25.87,3.15-8.99,10.34-15.68,19.66-18,6.32-1.57,12.88-1.57,19.19.03,9.76,2.48,17.19,9.73,19.98,19.41,2.18,7.56,2.14,15.72-.27,23.22-2.98,9.26-10.21,16.12-19.63,18.52-6.6,1.68-13.49,1.68-20.19-.21ZM276.71,82.63c2.22-1.77,3.48-4.12,4.21-6.74,1.97-7.06,1.63-18.35-4.41-22.84-3.79-2.82-9.29-2.52-12.74.68-1.89,1.75-3,3.96-3.67,6.45-1.8,6.7-1.48,16.89,3.55,21.81,3.46,3.38,9.17,3.73,13.05.65Z"/> <path d="M355.84,98.31c-8.77-2.48-15.36-8.76-18.5-17.09-2.94-7.78-2.98-18.04-.24-25.87,3.15-8.99,10.34-15.68,19.66-18,6.32-1.57,12.88-1.57,19.19.03,9.76,2.48,17.19,9.73,19.98,19.41,2.18,7.56,2.14,15.72-.27,23.22-2.98,9.26-10.21,16.12-19.63,18.52-6.6,1.68-13.49,1.68-20.19-.21ZM372.44,82.63c2.22-1.77,3.48-4.12,4.21-6.74,1.97-7.06,1.63-18.35-4.41-22.84-3.79-2.82-9.29-2.52-12.74.68-1.89,1.75-3,3.96-3.67,6.45-1.8,6.7-1.48,16.89,3.55,21.81,3.46,3.38,9.17,3.73,13.05.65Z"/> <path d="M771.88,98.31c-8.77-2.48-15.36-8.76-18.5-17.09-2.94-7.78-2.98-18.04-.24-25.87,3.15-8.99,10.34-15.68,19.66-18,6.32-1.57,12.88-1.57,19.19.03,9.76,2.48,17.19,9.73,19.98,19.41,2.18,7.56,2.14,15.72-.27,23.22-2.98,9.26-10.21,16.12-19.63,18.52-6.6,1.68-13.49,1.68-20.19-.21ZM788.48,82.63c2.22-1.77,3.48-4.12,4.21-6.74,1.97-7.06,1.63-18.35-4.41-22.84-3.79-2.82-9.29-2.52-12.74.68-1.89,1.75-3,3.96-3.67,6.45-1.8,6.7-1.48,16.89,3.55,21.81,3.46,3.38,9.17,3.73,13.05.65Z"/> <path d="M148.31,79.26l17.33,2.23c-4.38,16.24-23.64,20.83-38.48,17.01-9.01-2.32-15.99-8.68-19.09-17.39s-2.87-19.7.79-28c3.53-8,10.35-13.8,18.9-15.89,6.17-1.5,12.53-1.4,18.62.35,7.91,2.26,14.13,7.77,17.34,15.3,1.73,4.08,2.67,8.29,2.7,12.76l.04,6.9h-41.44c.2,5.71,2.39,10.5,7.82,12.4,5.92,1.79,13.12.41,15.48-5.68ZM148.04,61.15c-.25-1.96-.64-3.31-1.26-4.77-1.6-3.61-4.91-5.73-8.85-6.01-7.25-.51-11.99,3.52-12.78,10.79h22.89Z"/> <path d="M646.22,97.96c-7.07,1.55-15.62,2.01-22.25-.34-6.61-2.62-9.47-7.82-9.88-14.85v-31.12s-8.64-.02-8.64-.02v-14.54s8.63-.01,8.63-.01v-15.03s19.45,0,19.45,0v15.04s11.39,0,11.39,0v14.55s-11.39,0-11.39,0v28.58c.17,2.35,1.69,3.73,3.98,3.93l6.74-.53,1.96,14.34Z"/> <rect x="308.73" y="15.63" width="19.38" height="82.84"/> <path d="M556.52,98.46h-19.37s0-61.38,0-61.38h18.73s.14,11.41.14,11.41l2.16-4.8c3.68-6.83,10.89-8.28,18.27-6.72v16.63c-3.01-.52-6.09-.9-9.21-.63-6.1.54-10.28,5.19-10.69,11.28l-.02,34.2Z"/> <rect x="581.77" y="37.08" width="19.38" height="61.39"/> <path d="M596.96,28.69c-3.4,2.05-7.71,2.02-11.07.13-2.87-1.61-4.57-4.41-4.75-7.41-.2-3.35,1.22-6.34,4.05-8.26,3.59-2.44,8.48-2.49,12.1-.11,2.8,1.84,4.28,4.72,4.23,7.92s-1.61,5.96-4.56,7.74Z"/></svg>
+      </a>
+    </header>
+
+    <main>
+      <svg class="curve" viewBox="0 0 1200 700" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0.0 82.0 L10.0 184.7 L20.0 235.6 L30.0 269.7 L40.0 295.4 L50.0 316.1 L60.0 333.3 L70.0 348.1 L80.0 361.1 L90.0 372.6 L100.0 383.0 L110.0 392.5 L120.0 401.2 L130.0 409.2 L140.0 416.7 L150.0 423.6 L160.0 430.1 L170.0 436.3 L180.0 442.1 L190.0 447.6 L200.0 452.8 L210.0 457.8 L220.0 462.5 L230.0 467.1 L240.0 471.4 L250.0 475.6 L260.0 479.6 L270.0 483.5 L280.0 487.2 L290.0 490.9 L300.0 494.3 L310.0 497.7 L320.0 501.0 L330.0 504.2 L340.0 507.2 L350.0 510.2 L360.0 513.1 L370.0 516.0 L380.0 518.7 L390.0 521.4 L400.0 524.0 L410.0 526.6 L420.0 529.1 L430.0 531.5 L440.0 533.9 L450.0 536.2 L460.0 538.5 L470.0 540.7 L480.0 542.9 L490.0 545.1 L500.0 547.1 L510.0 549.2 L520.0 551.2 L530.0 553.2 L540.0 555.1 L550.0 557.0 L560.0 558.9 L570.0 560.8 L580.0 562.6 L590.0 564.3 L600.0 566.1 L610.0 567.8 L620.0 569.5 L630.0 571.2 L640.0 572.8 L650.0 574.4 L660.0 576.0 L670.0 577.6 L680.0 579.1 L690.0 580.6 L700.0 582.1 L710.0 583.6 L720.0 585.1 L730.0 586.5 L740.0 587.9 L750.0 589.3 L760.0 590.7 L770.0 592.0 L780.0 593.4 L790.0 594.7 L800.0 596.0 L810.0 597.3 L820.0 598.6 L830.0 599.9 L840.0 601.1 L850.0 602.3 L860.0 603.6 L870.0 604.8 L880.0 606.0 L890.0 607.1 L900.0 608.3 L910.0 609.5 L920.0 610.6 L930.0 611.7 L940.0 612.8 L950.0 613.9 L960.0 615.0 L970.0 616.1 L980.0 617.2 L990.0 618.3 L1000.0 619.3 L1010.0 620.3 L1020.0 621.4 L1030.0 622.4 L1040.0 623.4 L1050.0 624.4 L1060.0 625.4 L1070.0 626.4 L1080.0 627.3 L1090.0 628.3 L1100.0 629.3 L1110.0 630.2 L1120.0 631.1 L1130.0 632.1 L1140.0 633.0 L1150.0 633.9 L1160.0 634.8 L1170.0 635.7 L1180.0 636.6 L1190.0 637.5 L1200.0 638.3" />
+      </svg>
+
+      <div class="content">
+        <p class="eyebrow reveal">Errore di connessione</p>
+        <h1 class="title reveal" style="--delay: 100ms">Server non raggiungibile.</h1>
+        <p class="lead reveal" style="--delay: 250ms">
+          Al momento non riusciamo a contattare il sito. Controlla la connessione e riprova tra qualche istante.
+        </p>
+        <div class="actions reveal" style="--delay: 400ms">
+          <button type="button" class="button button--primary" onclick="location.reload()">Riprova</button>
+          <a class="button button--secondary" href="/">Torna alla home</a>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>© <span id="year">2026</span> Menologaritmo. All rights reserved.</p>
+    </footer>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+      window.addEventListener('online', () => location.reload())
+    </script>
+  </body>
+</html>

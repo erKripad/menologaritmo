@@ -1,6 +1,13 @@
 # Istruzioni e log per Claude Code (mai nei commit)
 /claude-code/
 
+# Credenziali (Google Drive, Cloudflare): mai nei commit
+.dev.vars*
+!.dev.vars.example
+.wrangler
+*service-account*.json
+*credentials*.json
+
 # Dipendenze e build
 node_modules
 dist
