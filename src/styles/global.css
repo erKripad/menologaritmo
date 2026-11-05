@@ -19,8 +19,13 @@
   --color-border: rgb(0 0 0 / 0.1);
   --color-border-strong: rgb(0 0 0 / 0.35);
   --color-line: rgb(0 0 0 / 0.14);
-  --color-header-bg: rgb(255 255 255 / 0.72);
   --color-dot: rgb(0 0 0 / 0.25);
+
+  --glass-blur: blur(2px) saturate(180%);
+  --glass-tint: rgb(255 255 255 / 0.5);
+  --glass-edge: rgb(255 255 255 / 0.85);
+  --glass-rim: rgb(0 0 0 / 0.08);
+  --glass-shadow: 0 4px 20px rgb(0 0 0 / 0.035);
 
   --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
@@ -52,8 +57,12 @@
     --color-border: rgb(255 255 255 / 0.12);
     --color-border-strong: rgb(255 255 255 / 0.4);
     --color-line: rgb(255 255 255 / 0.18);
-    --color-header-bg: rgb(0 0 0 / 0.72);
     --color-dot: rgb(255 255 255 / 0.3);
+
+    --glass-tint: rgb(20 20 22 / 0.45);
+    --glass-edge: rgb(255 255 255 / 0.22);
+    --glass-rim: rgb(255 255 255 / 0.1);
+    --glass-shadow: 0 8px 32px rgb(0 0 0 / 0.4);
   }
 }
 

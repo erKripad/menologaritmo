@@ -4,7 +4,7 @@ import Button from '../../components/Button/Button.jsx'
 export default function NotFound() {
   return (
     <>
-      <title>Pagina non trovata · Menologaritmo</title>
+      <title>Pagina non trovata · menologaritmo</title>
       <meta name="robots" content="noindex" />
       <ErrorPage
         code="Errore 404"

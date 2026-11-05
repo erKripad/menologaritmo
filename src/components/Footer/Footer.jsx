@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer__inner">
-        <p>© {YEAR} Menologaritmo. All rights reserved.</p>
+        <p>© {YEAR} menologaritmo. All rights reserved.</p>
       </div>
     </footer>
   )

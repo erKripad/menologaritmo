@@ -21,7 +21,7 @@ export default function AboutSection() {
 
       <div className="container about__content">
         <Reveal as="h1" id="chi-siamo-title" className="title-hero">
-          Menologaritmo
+          menologaritmo
         </Reveal>
         <Reveal as="p" className="lead about__lead" delay={150}>
           Un progetto indipendente che porta sul palco artisti musicali emergenti, li aiuta a farsi conoscere dal

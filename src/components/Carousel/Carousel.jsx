@@ -19,6 +19,7 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
   const [focused, setFocused] = useState(false)
   const [pageHidden, setPageHidden] = useState(false)
   const touchStartX = useRef(null)
+  const playButton = useRef(null)
 
   const active = position % count
   const running = playing && !focused && !pageHidden && count > 1
@@ -88,6 +89,13 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
     else if (delta > SWIPE_THRESHOLD) previous()
   }
 
+  // Ferma lo scorrimento solo se si arriva con la tastiera (Tab) su un elemento del carosello.
+  // Un clic col mouse non conta, e nemmeno il bottone pausa/riproduci: altrimenti, dopo averlo
+  // premuto, il carosello resterebbe fermo pur mostrando "in riproduzione".
+  const handleFocus = (event) => {
+    setFocused(event.target !== playButton.current && event.target.matches(':focus-visible'))
+  }
+
   const handleBlur = (event) => {
     if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false)
   }
@@ -106,7 +114,7 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
       aria-roledescription="carosello"
       aria-label={label}
       style={{ '--position': position, '--interval': `${interval}ms` }}
-      onFocus={() => setFocused(true)}
+      onFocus={handleFocus}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
     >
@@ -160,6 +168,7 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
         </div>
 
         <button
+          ref={playButton}
           type="button"
           className="carousel__play"
           aria-label={playing ? 'Metti in pausa' : 'Riproduci'}

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'menologaritmo-offline-v2'
+const CACHE_NAME = 'menologaritmo-offline-v3'
 const OFFLINE_URL = '/offline.html'
 
 async function cacheOfflinePage() {
