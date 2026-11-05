@@ -1,4 +1,5 @@
-import { getFolderImage, readConfig } from '../lib/googleDrive.js'
+import { getFolderImage, readConfig, resolveSubfolder } from '../lib/googleDrive.js'
+import { DRIVE_FOLDERS } from '../driveFolders.js'
 
 const CACHE_SECONDS = 86400
 
@@ -12,7 +13,11 @@ export async function handleImage(request, env, ctx, fileId) {
   if (cached) return cached
 
   try {
-    const image = await getFolderImage(readConfig(env), fileId)
+    const config = readConfig(env)
+    const allowedFolderIds = await Promise.all(
+      Object.values(DRIVE_FOLDERS).map((name) => resolveSubfolder(config, name)),
+    )
+    const image = await getFolderImage(config, fileId, allowedFolderIds)
     if (!image) return notFound()
 
     const response = new Response(image.body, {

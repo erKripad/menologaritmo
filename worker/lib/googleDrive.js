@@ -120,63 +120,90 @@ async function driveFetch(config, path, params) {
   return fetch(url, { headers: { Authorization: `Bearer ${token}` } })
 }
 
+const FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder'
+const SUBFOLDER_NAME_PATTERN = /^[a-z0-9-]+$/
+const SUBFOLDER_CACHE_MS = 5 * 60 * 1000
+
+const subfolderCache = new Map()
+
+async function driveError(response, label) {
+  const text = await response.text()
+  const code = text.match(/"reason"\s*:\s*"([A-Za-z_]+)"/)?.[1] ?? 'unknown'
+  return new DriveError('drive', `HTTP ${response.status} ${code}`, `${label}: ${response.status} ${text}`)
+}
+
 async function assertFolderReadable(config) {
   const response = await driveFetch(config, `/${config.folderId}`, { fields: 'id, mimeType, trashed' })
   if (response.status === 404) {
     throw new DriveError('drive', 'cartella non trovata o non condivisa con GOOGLE_CLIENT_EMAIL')
   }
-  if (!response.ok) {
-    const text = await response.text()
-    const code = text.match(/"reason"\s*:\s*"([A-Za-z_]+)"/)?.[1] ?? 'unknown'
-    throw new DriveError('drive', `HTTP ${response.status} ${code}`, `Drive folder check failed: ${response.status} ${text}`)
-  }
+  if (!response.ok) throw await driveError(response, 'Drive folder check failed')
   const folder = await response.json()
-  if (folder.mimeType !== 'application/vnd.google-apps.folder' || folder.trashed) {
+  if (folder.mimeType !== FOLDER_MIME_TYPE || folder.trashed) {
     throw new DriveError('drive', 'DRIVE_FOLDER_ID non è una cartella (o è nel cestino)')
   }
 }
 
-export async function listFolderImages(config) {
-  await assertFolderReadable(config)
-  const mimeFilter = ALLOWED_IMAGE_TYPES.map((type) => `mimeType = '${type}'`).join(' or ')
-  const query = `'${config.folderId}' in parents and trashed = false and (${mimeFilter})`
+async function listFiles(config, query, fields) {
   const files = []
   let pageToken
 
   do {
     const response = await driveFetch(config, '', {
       q: query,
-      fields: 'nextPageToken, files(id, name, mimeType, modifiedTime, parents)',
+      fields: `nextPageToken, files(${fields})`,
       pageSize: '200',
       includeItemsFromAllDrives: 'true',
       ...(pageToken ? { pageToken } : {}),
     })
-    if (!response.ok) {
-      const text = await response.text()
-      const code = text.match(/"reason"\s*:\s*"([A-Za-z_]+)"/)?.[1] ?? 'unknown'
-      throw new DriveError('drive', `HTTP ${response.status} ${code}`, `Drive list failed: ${response.status} ${text}`)
-    }
+    if (!response.ok) throw await driveError(response, 'Drive list failed')
     const data = await response.json()
     files.push(...data.files)
     pageToken = data.nextPageToken
   } while (pageToken)
 
-  return files.filter((file) => file.parents?.includes(config.folderId))
+  return files
 }
 
-export async function getFolderImage(config, fileId) {
+export async function resolveSubfolder(config, name) {
+  if (!SUBFOLDER_NAME_PATTERN.test(name)) throw new Error(`Invalid subfolder name: ${name}`)
+
+  const cacheKey = `${config.folderId}/${name}`
+  const cached = subfolderCache.get(cacheKey)
+  if (cached && cached.expiresAt > Date.now()) return cached.id
+
+  await assertFolderReadable(config)
+  const query = `'${config.folderId}' in parents and name = '${name}' and mimeType = '${FOLDER_MIME_TYPE}' and trashed = false`
+  const folders = (await listFiles(config, query, 'id, parents')).filter((folder) =>
+    folder.parents?.includes(config.folderId),
+  )
+  if (!folders.length) throw new DriveError('drive', `cartella "${name}" non trovata dentro website`)
+  if (folders.length > 1) console.warn(`More than one "${name}" folder inside website: using the first one`)
+
+  subfolderCache.set(cacheKey, { id: folders[0].id, expiresAt: Date.now() + SUBFOLDER_CACHE_MS })
+  return folders[0].id
+}
+
+export async function listFolderImages(config, folderId) {
+  const mimeFilter = ALLOWED_IMAGE_TYPES.map((type) => `mimeType = '${type}'`).join(' or ')
+  const query = `'${folderId}' in parents and trashed = false and (${mimeFilter})`
+  const files = await listFiles(config, query, 'id, name, mimeType, modifiedTime, parents')
+  return files.filter((file) => file.parents?.includes(folderId))
+}
+
+export async function getFolderImage(config, fileId, allowedFolderIds) {
   if (!isValidDriveId(fileId)) return null
 
   const metadataResponse = await driveFetch(config, `/${fileId}`, { fields: 'id, mimeType, parents, trashed' })
   if (metadataResponse.status === 404) return null
-  if (!metadataResponse.ok) throw new Error(`Drive metadata failed: ${metadataResponse.status}`)
+  if (!metadataResponse.ok) throw await driveError(metadataResponse, 'Drive metadata failed')
 
   const file = await metadataResponse.json()
-  const insideFolder = file.parents?.includes(config.folderId)
-  if (!insideFolder || file.trashed || !ALLOWED_IMAGE_TYPES.includes(file.mimeType)) return null
+  const insideAllowedFolder = file.parents?.some((parent) => allowedFolderIds.includes(parent))
+  if (!insideAllowedFolder || file.trashed || !ALLOWED_IMAGE_TYPES.includes(file.mimeType)) return null
 
   const mediaResponse = await driveFetch(config, `/${fileId}`, { alt: 'media' })
-  if (!mediaResponse.ok) throw new Error(`Drive download failed: ${mediaResponse.status}`)
+  if (!mediaResponse.ok) throw await driveError(mediaResponse, 'Drive download failed')
 
   return { body: mediaResponse.body, mimeType: file.mimeType }
 }

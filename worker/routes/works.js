@@ -1,4 +1,5 @@
-import { listFolderImages, readConfig } from '../lib/googleDrive.js'
+import { listFolderImages, readConfig, resolveSubfolder } from '../lib/googleDrive.js'
+import { DRIVE_FOLDERS } from '../driveFolders.js'
 import { workFromFileName } from '../lib/workFromFileName.js'
 
 const MAX_WORKS = 12
@@ -22,7 +23,8 @@ export async function handleWorks(request, env, ctx) {
 
   try {
     const config = readConfig(env)
-    const files = await listFolderImages(config)
+    const folderId = await resolveSubfolder(config, DRIVE_FOLDERS.recentWorks)
+    const files = await listFolderImages(config, folderId)
 
     const works = []
     for (const file of files) {
