@@ -6,3 +6,9 @@
   display: flex;
   justify-content: center;
 }
+
+.radici__soon {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
