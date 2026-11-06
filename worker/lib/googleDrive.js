@@ -184,13 +184,36 @@ export async function resolveSubfolder(config, name) {
   return folders[0].id
 }
 
-export async function listFolderFiles(config, folderId) {
-  const query = `'${folderId}' in parents and trashed = false and mimeType != '${FOLDER_MIME_TYPE}'`
-  const files = await listFiles(config, query, 'id, name, mimeType, modifiedTime, parents')
-  return files.filter((file) => file.parents?.includes(folderId))
+const IMAGE_FIELDS = 'id, name, mimeType, modifiedTime, parents, imageMediaMetadata(width, height, rotation)'
+const EVENT_FOLDERS_CACHE_MS = 5 * 60 * 1000
+
+const eventFoldersCache = new Map()
+
+// Cartelle direttamente dentro folderId (una per evento)
+export async function listSubfolders(config, folderId, { fresh = false } = {}) {
+  const cached = eventFoldersCache.get(folderId)
+  if (!fresh && cached && cached.expiresAt > Date.now()) return cached.folders
+
+  const query = `'${folderId}' in parents and trashed = false and mimeType = '${FOLDER_MIME_TYPE}'`
+  const folders = (await listFiles(config, query, 'id, name, parents')).filter((folder) =>
+    folder.parents?.includes(folderId),
+  )
+  eventFoldersCache.set(folderId, { folders, expiresAt: Date.now() + EVENT_FOLDERS_CACHE_MS })
+  return folders
 }
 
-export async function getFolderImage(config, fileId, allowedFolderIds) {
+// File (non cartelle) direttamente dentro una delle cartelle indicate, con le misure delle foto
+export async function listFilesIn(config, folderIds) {
+  const ids = folderIds.filter(isValidDriveId)
+  if (!ids.length) return []
+  const parents = ids.map((id) => `'${id}' in parents`).join(' or ')
+  const query = `(${parents}) and trashed = false and mimeType != '${FOLDER_MIME_TYPE}'`
+  const files = await listFiles(config, query, IMAGE_FIELDS)
+  return files.filter((file) => file.parents?.some((parent) => ids.includes(parent)))
+}
+
+// Una foto viene servita solo se sta in una cartella evento, cioè in una sottocartella di rootFolderId
+export async function getEventImage(config, fileId, rootFolderId) {
   if (!isValidDriveId(fileId)) return null
 
   const metadataResponse = await driveFetch(config, `/${fileId}`, { fields: 'id, mimeType, parents, trashed' })
@@ -198,8 +221,12 @@ export async function getFolderImage(config, fileId, allowedFolderIds) {
   if (!metadataResponse.ok) throw await driveError(metadataResponse, 'Drive metadata failed')
 
   const file = await metadataResponse.json()
-  const insideAllowedFolder = file.parents?.some((parent) => allowedFolderIds.includes(parent))
-  if (!insideAllowedFolder || file.trashed || !ALLOWED_IMAGE_TYPES.includes(file.mimeType)) return null
+  if (file.trashed || !ALLOWED_IMAGE_TYPES.includes(file.mimeType)) return null
+
+  const isInEventFolder = (folders) => file.parents?.some((parent) => folders.some((folder) => folder.id === parent))
+  if (!isInEventFolder(await listSubfolders(config, rootFolderId))) {
+    if (!isInEventFolder(await listSubfolders(config, rootFolderId, { fresh: true }))) return null
+  }
 
   const mediaResponse = await driveFetch(config, `/${fileId}`, { alt: 'media' })
   if (!mediaResponse.ok) throw await driveError(mediaResponse, 'Drive download failed')

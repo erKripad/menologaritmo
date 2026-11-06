@@ -1,0 +1,58 @@
+.photo-columns {
+  --photo-gap: clamp(6px, 1.2vw, 16px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--photo-gap);
+  align-items: start;
+}
+
+.photo-columns__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--photo-gap);
+}
+
+.photo-columns__item {
+  overflow: hidden;
+  border-radius: clamp(6px, 1vw, 14px);
+  background: var(--color-surface);
+}
+
+.photo-columns__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.photo-columns__image--loaded {
+  opacity: 1;
+}
+
+/* Segnaposto in bianco e nero (solo con "npm run dev" senza API) */
+.photo-columns__placeholder {
+  --light-x: 70%;
+  --light-y: 30%;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at var(--light-x) var(--light-y), #5a5a5d 0%, transparent 60%),
+    linear-gradient(160deg, #1d1d1f, #000);
+}
+
+.photo-columns__placeholder--1 {
+  --light-x: 25%;
+  --light-y: 20%;
+}
+
+.photo-columns__placeholder--2 {
+  --light-x: 50%;
+  --light-y: 0%;
+}
+
+.photo-columns__placeholder--3 {
+  --light-x: 85%;
+  --light-y: 70%;
+}

@@ -1,5 +1,6 @@
 .work-card {
   position: relative;
+  display: block;
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: var(--radius-lg);
@@ -66,6 +67,35 @@
 .work-card__title {
   margin-top: 6px;
   font-size: var(--text-h3);
+}
+
+.work-card__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  margin-top: 12px;
+  font-size: 1.0625rem;
+  font-weight: 500;
+}
+
+.work-card__more::after {
+  content: '›';
+  font-size: 1.2em;
+  line-height: 1;
+  transition: transform 300ms var(--ease-out);
+}
+
+.work-card--linked:hover .work-card__more {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.work-card--linked:hover .work-card__more::after {
+  transform: translateX(4px);
+}
+
+.work-card--linked:focus-visible {
+  outline-offset: 4px;
 }
 
 /* Cellulare: card verticali come su apple.com */

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import placeholderWorks from './placeholderWorks.js'
+import placeholderWorks from '../../../../data/placeholderWorks.js'
 
 const API_URL = '/api/works'
 const LOADING_SLIDES = 3
 
-const loadingWorks = Array.from({ length: LOADING_SLIDES }, (_, index) => ({ id: `loading-${index}`, image: null }))
+const loadingWorks = Array.from({ length: LOADING_SLIDES }, (_, index) => ({ slug: `loading-${index}`, image: null }))
 
 // status: "loading" | "ready" | "empty"
 export default function useRecentWorks() {

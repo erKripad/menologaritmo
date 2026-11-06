@@ -1,9 +1,11 @@
+import { Link } from 'react-router'
 import './WorkCard.css'
 
-// variant: numero della slide, usato solo per variare lo sfondo segnaposto
-export default function WorkCard({ work, variant = 0 }) {
-  return (
-    <article className="work-card">
+// variant: numero della slide, usato solo per variare lo sfondo segnaposto.
+// linked: la card porta alla galleria dell'evento (solo la slide al centro del carosello).
+export default function WorkCard({ work, variant = 0, linked = false }) {
+  const content = (
+    <>
       {work.image ? (
         <img className="work-card__media" src={work.image} alt={`${work.artist}, ${work.venue}`} loading="lazy" />
       ) : (
@@ -16,8 +18,23 @@ export default function WorkCard({ work, variant = 0 }) {
             {work.date} · {work.venue}
           </p>
           <h3 className="work-card__title">{work.artist}</h3>
+          {linked && <span className="work-card__more">Guarda le foto</span>}
         </div>
       )}
-    </article>
+    </>
   )
+
+  if (linked && work.artist) {
+    return (
+      <Link
+        to={`/lavori-recenti/${work.slug}`}
+        className="work-card work-card--linked"
+        aria-label={`Guarda le foto di ${work.artist}, ${work.venue}`}
+      >
+        {content}
+      </Link>
+    )
+  }
+
+  return <article className="work-card">{content}</article>
 }

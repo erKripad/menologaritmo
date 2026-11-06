@@ -12,7 +12,7 @@ export default function RecentWorks() {
     <Section id="lavori-recenti" tone="alt" className="recent-works" aria-labelledby="lavori-recenti-title">
       <div className="container recent-works__header">
         <Reveal as="h2" id="lavori-recenti-title" className="title-section">
-          Sul palco, di recente.
+          Lavori recenti.
         </Reveal>
       </div>
 
@@ -23,9 +23,11 @@ export default function RecentWorks() {
           <Carousel
             key={status}
             items={works}
-            getKey={(work) => work.id}
+            getKey={(work) => work.slug}
             label="Lavori recenti"
-            renderItem={(work) => <WorkCard work={work} variant={works.indexOf(work)} />}
+            renderItem={(work, isActive) => (
+              <WorkCard work={work} variant={works.indexOf(work)} linked={isActive && status === 'ready'} />
+            )}
           />
         )}
       </Reveal>

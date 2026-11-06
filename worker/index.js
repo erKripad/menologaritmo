@@ -1,7 +1,16 @@
-import { apiNotFound, handleWorks } from './routes/works.js'
+import { apiNotFound, handleWork, handleWorks } from './routes/works.js'
 import { handleImage } from './routes/image.js'
 
 const IMAGE_ROUTE = /^\/api\/images\/([^/]+)$/
+const WORK_ROUTE = /^\/api\/works\/([^/]+)$/
+
+function decodeSegment(segment) {
+  try {
+    return decodeURIComponent(segment)
+  } catch {
+    return ''
+  }
+}
 
 export default {
   async fetch(request, env, ctx) {
@@ -14,8 +23,11 @@ export default {
 
     if (url.pathname === '/api/works') return handleWorks(request, env, ctx)
 
+    const workMatch = WORK_ROUTE.exec(url.pathname)
+    if (workMatch) return handleWork(request, env, ctx, decodeSegment(workMatch[1]))
+
     const imageMatch = IMAGE_ROUTE.exec(url.pathname)
-    if (imageMatch) return handleImage(request, env, ctx, decodeURIComponent(imageMatch[1]))
+    if (imageMatch) return handleImage(request, env, ctx, decodeSegment(imageMatch[1]))
 
     return apiNotFound()
   },

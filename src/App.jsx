@@ -3,6 +3,7 @@ import Layout from './components/Layout/Layout.jsx'
 import Home from './pages/Home/Home.jsx'
 import Radici from './pages/Radici/Radici.jsx'
 import AddettiAiLavori from './pages/AddettiAiLavori/AddettiAiLavori.jsx'
+import WorkGallery from './pages/WorkGallery/WorkGallery.jsx'
 import NotFound from './pages/NotFound/NotFound.jsx'
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
         <Route index element={<Home />} />
         <Route path="radici" element={<Radici />} />
         <Route path="addetti-ai-lavori" element={<AddettiAiLavori />} />
+        <Route path="lavori-recenti/:slug" element={<WorkGallery />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

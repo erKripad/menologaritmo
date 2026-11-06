@@ -11,12 +11,16 @@ const HEADER_PARTNERS = {
 }
 
 export default function Layout() {
-  const { pathname } = useLocation()
+  const { pathname, state } = useLocation()
+  const scrollTarget = state?.scrollTo
 
-  // Ogni nuova pagina si apre dall'inizio
+  // Ogni nuova pagina si apre dall'inizio, oppure sulla sezione indicata
+  // (es. dalla galleria si torna direttamente al carosello dei lavori recenti)
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
-  }, [pathname])
+    const target = scrollTarget && document.getElementById(scrollTarget)
+    if (target) target.scrollIntoView({ behavior: 'instant' })
+    else window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [pathname, scrollTarget])
 
   return (
     <div className="layout">
