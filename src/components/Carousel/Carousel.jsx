@@ -18,6 +18,9 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
   const [playing, setPlaying] = useState(() => !prefersReducedMotion())
   const [focused, setFocused] = useState(false)
   const [pageHidden, setPageHidden] = useState(false)
+  // Cresce a ogni cambio di slide (automatico, swipe, pallino, freccia): fa ripartire il timer
+  // e la barra di avanzamento. Il salto invisibile tra le copie non lo cambia.
+  const [step, setStep] = useState(0)
   const touchStartX = useRef(null)
   const playButton = useRef(null)
 
@@ -27,6 +30,7 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
   const goTo = useCallback(
     (target) => {
       setAnimated(true)
+      setStep((current) => current + 1)
       setPosition(Math.max(0, Math.min(target, count * 3 - 1)))
     },
     [count],
@@ -34,20 +38,22 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
 
   const next = useCallback(() => {
     setAnimated(true)
+    setStep((current) => current + 1)
     setPosition((current) => Math.min(current + 1, count * 3 - 1))
   }, [count])
 
   const previous = useCallback(() => {
     setAnimated(true)
+    setStep((current) => current + 1)
     setPosition((current) => Math.max(current - 1, 0))
   }, [])
 
-  // Autoplay
+  // Autoplay: il conto alla rovescia riparte da zero a ogni cambio di slide
   useEffect(() => {
     if (!running) return
-    const id = setInterval(next, interval)
-    return () => clearInterval(id)
-  }, [running, next, interval])
+    const id = setTimeout(next, interval)
+    return () => clearTimeout(id)
+  }, [running, next, interval, step])
 
   // Pausa quando la scheda del browser non è visibile
   useEffect(() => {
@@ -157,7 +163,7 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
                 <span className="carousel__dot-bar">
                   {isActive && (
                     <span
-                      key={`${position}-${running}`}
+                      key={`${step}-${running}`}
                       className={`carousel__dot-fill${running ? ' carousel__dot-fill--running' : ''}`}
                     />
                   )}
