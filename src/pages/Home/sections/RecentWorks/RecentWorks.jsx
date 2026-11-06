@@ -12,7 +12,7 @@ export default function RecentWorks() {
     <Section id="lavori-recenti" tone="alt" className="recent-works" aria-labelledby="lavori-recenti-title">
       <div className="container recent-works__header">
         <Reveal as="h2" id="lavori-recenti-title" className="title-section">
-          Lavori recenti.
+          Lavori recenti
         </Reveal>
       </div>
 
