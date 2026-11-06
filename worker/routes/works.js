@@ -23,7 +23,7 @@ async function cached(request, ctx, build) {
   if (hit) return hit
 
   const response = await build()
-  if (response.status === 200 || response.status === 404) ctx.waitUntil(cache.put(request, response.clone()))
+  if (response.status === 200) ctx.waitUntil(cache.put(request, response.clone()))
   return response
 }
 
@@ -121,7 +121,7 @@ export function handleWork(request, env, ctx, slug) {
     try {
       const config = readConfig(env)
       const event = (await eventFolders(config)).find(({ work }) => work.slug === slug)
-      if (!event) return json({ error: 'Not found' }, 404, `public, max-age=${CACHE_SECONDS}`)
+      if (!event) return apiNotFound()
 
       const photos = eventPhotos(await listFilesIn(config, [event.folder.id]), event.folder).map((file) => ({
         id: file.id,

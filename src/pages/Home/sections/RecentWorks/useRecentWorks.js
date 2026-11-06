@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import placeholderWorks from '../../../../data/placeholderWorks.js'
 
-const API_URL = '/api/works'
+// ?v=2: formato con le cartelle evento. Cambiando versione, browser e Cloudflare non usano
+// le risposte salvate in cache col formato vecchio.
+const API_URL = '/api/works?v=2'
 const LOADING_SLIDES = 3
 
 const loadingWorks = Array.from({ length: LOADING_SLIDES }, (_, index) => ({ slug: `loading-${index}`, image: null }))

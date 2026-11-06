@@ -24,7 +24,7 @@ export default function WorkCard({ work, variant = 0, linked = false }) {
     </>
   )
 
-  if (linked && work.artist) {
+  if (linked && work.artist && work.slug) {
     return (
       <Link
         to={`/lavori-recenti/${work.slug}`}
