@@ -1,9 +1,7 @@
 .projects__row {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  /* Spazio ai lati della linea: allontana un po' i loghi dal centro */
-  column-gap: clamp(16px, 7vw, 120px);
 }
 
 .projects__item {
@@ -75,10 +73,6 @@
 
 /* Cellulare: loghi più piccoli, sempre affiancati */
 @media (max-width: 734px) {
-  .projects__row {
-    padding-inline: 8px;
-  }
-
   .projects__divider {
     height: 180px;
   }

@@ -29,8 +29,8 @@ export default function ProjectsSection({ projects }) {
   const [first, second] = projects
 
   return (
-    <Section id="progetti" className="projects" aria-label="Progetti">
-      <div className="container projects__row">
+    <Section id="progetti" tone="alt" className="projects" aria-label="Progetti">
+      <div className="projects__row">
         <ProjectLogo {...first} delay={0} />
         <Reveal className="projects__divider" delay={150} aria-hidden="true" />
         <ProjectLogo {...second} delay={250} />
