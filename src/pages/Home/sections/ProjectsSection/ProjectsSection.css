@@ -71,9 +71,34 @@
   text-align: center;
 }
 
-/* Cellulare: loghi più piccoli, sempre affiancati */
+/* Cellulare: progetti uno sopra l'altro, separati da una linea orizzontale */
 @media (max-width: 734px) {
+  .projects__row {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    row-gap: 40px;
+  }
+
+  .projects__logo {
+    width: min(64vw, 260px);
+  }
+
+  /* Il cerchio lascerebbe troppo vuoto sopra e sotto i loghi larghi */
+  .projects__logo:not(:has(.projects__logo-placeholder)) {
+    aspect-ratio: auto;
+    border-radius: var(--radius-lg);
+  }
+
   .projects__divider {
-    height: 180px;
+    width: min(48vw, 200px);
+    height: 1px;
+  }
+
+  .projects__divider.reveal {
+    transform: scaleX(0);
+  }
+
+  .projects__divider.reveal--visible {
+    transform: scaleX(1);
   }
 }

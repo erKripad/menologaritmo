@@ -56,3 +56,11 @@
   --light-x: 85%;
   --light-y: 70%;
 }
+
+/* Cellulare: una sola colonna, foto a tutta larghezza */
+@media (max-width: 734px) {
+  .photo-columns {
+    --photo-gap: 12px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

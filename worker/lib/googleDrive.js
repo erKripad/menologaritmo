@@ -213,10 +213,39 @@ export async function listFilesIn(config, folderIds) {
 }
 
 // Una foto viene servita solo se sta in una cartella evento, cioè in una sottocartella di rootFolderId
-export async function getEventImage(config, fileId, rootFolderId) {
+// Drive dà anche una versione ridimensionata della foto (thumbnailLink, finisce con "=s220"):
+// cambiando il suffisso si sceglie la larghezza. Gli originali pesano troppo per i cellulari.
+const THUMBNAIL_SIZE_SUFFIX = /=s\d+$/
+
+function resizedLink(thumbnailLink, width) {
+  if (!thumbnailLink || !THUMBNAIL_SIZE_SUFFIX.test(thumbnailLink)) return null
+  try {
+    const url = new URL(thumbnailLink.replace(THUMBNAIL_SIZE_SUFFIX, `=w${width}`))
+    return url.protocol === 'https:' && url.hostname.endsWith('.googleusercontent.com') ? url : null
+  } catch {
+    return null
+  }
+}
+
+async function fetchResized(config, thumbnailLink, width) {
+  const url = resizedLink(thumbnailLink, width)
+  if (!url) return null
+  const token = await getAccessToken(config)
+  const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+  const mimeType = response.headers.get('Content-Type')?.split(';')[0]
+  if (!response.ok || !mimeType?.startsWith('image/')) {
+    await response.body?.cancel()
+    console.warn(`Versione ridotta non disponibile (${response.status}), uso l'originale`)
+    return null
+  }
+  return { body: response.body, mimeType }
+}
+
+// width: larghezza voluta in pixel; senza, o se Drive non ha la versione ridotta, l'originale.
+export async function getEventImage(config, fileId, rootFolderId, width) {
   if (!isValidDriveId(fileId)) return null
 
-  const metadataResponse = await driveFetch(config, `/${fileId}`, { fields: 'id, mimeType, parents, trashed' })
+  const metadataResponse = await driveFetch(config, `/${fileId}`, { fields: 'id, mimeType, parents, trashed, thumbnailLink' })
   if (metadataResponse.status === 404) return null
   if (!metadataResponse.ok) throw await driveError(metadataResponse, 'Drive metadata failed')
 
@@ -226,6 +255,11 @@ export async function getEventImage(config, fileId, rootFolderId) {
   const isInEventFolder = (folders) => file.parents?.some((parent) => folders.some((folder) => folder.id === parent))
   if (!isInEventFolder(await listSubfolders(config, rootFolderId))) {
     if (!isInEventFolder(await listSubfolders(config, rootFolderId, { fresh: true }))) return null
+  }
+
+  if (width) {
+    const resized = await fetchResized(config, file.thumbnailLink, width).catch(() => null)
+    if (resized) return resized
   }
 
   const mediaResponse = await driveFetch(config, `/${fileId}`, { alt: 'media' })
