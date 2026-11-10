@@ -13,6 +13,13 @@
   transform: none !important;
 }
 
+/* I due span sono i bordi luminosi che la libreria disegna attorno al vetro. Sulla barra, che
+   tocca i lati dello schermo, si vedevano come una linea a sinistra e in basso; in più si
+   accendono seguendo il mouse e, se il mouse esce in fretta, restano accesi. Tolti. */
+.header > span {
+  display: none;
+}
+
 /* Il vetro della libreria si adatta al contenuto: qui riempie tutta la barra */
 .header__glass > .glass {
   display: flex !important;
