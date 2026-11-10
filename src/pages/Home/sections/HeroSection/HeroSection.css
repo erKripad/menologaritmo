@@ -1,0 +1,45 @@
+/* La lente sborda dal titolo: niente scorrimento orizzontale quando tocca i lati */
+.hero {
+  overflow: hidden;
+}
+
+.hero__scroll-hint {
+  position: absolute;
+  bottom: clamp(16px, 4vh, 40px);
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--color-text-muted);
+  translate: -50% 0;
+  animation: hero-bounce 2400ms ease-in-out infinite;
+}
+
+.hero__scroll-hint svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes hero-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+/* Schermi bassi (es. cellulare in orizzontale): niente freccia */
+@media (max-height: 500px) {
+  .hero__scroll-hint {
+    display: none;
+  }
+}

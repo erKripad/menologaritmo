@@ -14,7 +14,7 @@
   margin: 0;
   padding: 0 calc((100% - var(--card-width)) / 2);
   list-style: none;
-  transform: translateX(calc(var(--position) * (var(--card-width) + var(--gap)) * -1));
+  transform: translateX(calc(var(--position) * (var(--card-width) + var(--gap)) * -1 + var(--drag, 0px)));
 }
 
 .carousel__track--animated {
@@ -31,6 +31,12 @@
 .carousel__slide--active {
   opacity: 1;
   cursor: default;
+}
+
+/* Salto invisibile tra le copie: anche la luminosità cambia di colpo, altrimenti la foto
+   al centro (che diventa un'altra copia) si spegnerebbe e riaccenderebbe. */
+.carousel__track:not(.carousel__track--animated) .carousel__slide {
+  transition: none;
 }
 
 .carousel__controls {

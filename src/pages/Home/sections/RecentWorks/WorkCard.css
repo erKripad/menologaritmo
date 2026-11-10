@@ -71,6 +71,8 @@
 
 .work-card__more {
   display: inline-flex;
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
   align-items: center;
   gap: 0.4em;
   margin-top: 12px;
@@ -94,8 +96,20 @@
   transform: translateX(4px);
 }
 
-.work-card--linked:focus-visible {
-  outline-offset: 4px;
+.work-card--linked .work-card__more {
+  opacity: 1;
+}
+
+.work-card__link {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.work-card__link:focus-visible {
+  outline-color: #fff;
+  outline-offset: -6px;
 }
 
 /* Cellulare: card verticali come su apple.com */

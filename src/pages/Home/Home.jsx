@@ -1,3 +1,4 @@
+import HeroSection from './sections/HeroSection/HeroSection.jsx'
 import AboutSection from './sections/AboutSection/AboutSection.jsx'
 import RecentWorks from './sections/RecentWorks/RecentWorks.jsx'
 import ProjectsSection from './sections/ProjectsSection/ProjectsSection.jsx'
@@ -16,6 +17,7 @@ const PROJECTS = [
 export default function Home() {
   return (
     <>
+      <HeroSection />
       <AboutSection />
       <RecentWorks />
       <ProjectsSection projects={PROJECTS} />

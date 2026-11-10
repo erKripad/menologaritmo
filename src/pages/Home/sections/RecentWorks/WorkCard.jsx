@@ -8,8 +8,13 @@ const CARD_SIZES = '(max-width: 734px) 86vw, (max-width: 1068px) 84vw, min(1000p
 // variant: numero della slide, usato solo per variare lo sfondo segnaposto.
 // linked: la card porta alla galleria dell'evento (solo la slide al centro del carosello).
 export default function WorkCard({ work, variant = 0, linked = false }) {
-  const content = (
-    <>
+  const isLink = linked && work.artist && work.slug
+
+  // Sempre lo stesso <article>: se diventasse un <a> quando la slide arriva al centro,
+  // React ricreerebbe l'immagine e sul cellulare la foto si spegnerebbe per un attimo.
+  // Il link è uno strato trasparente sopra la card.
+  return (
+    <article className={`work-card${isLink ? ' work-card--linked' : ''}`}>
       {work.image ? (
         <img
           className="work-card__media"
@@ -28,23 +33,19 @@ export default function WorkCard({ work, variant = 0, linked = false }) {
             {work.date} · {work.venue}
           </p>
           <h3 className="work-card__title">{work.artist}</h3>
-          {linked && <span className="work-card__more">Guarda le foto</span>}
+          <span className="work-card__more" aria-hidden={!isLink}>
+            Guarda le foto
+          </span>
         </div>
       )}
-    </>
+
+      {isLink && (
+        <Link
+          to={`/lavori-recenti/${work.slug}`}
+          className="work-card__link"
+          aria-label={`Guarda le foto di ${work.artist}, ${work.venue}`}
+        />
+      )}
+    </article>
   )
-
-  if (linked && work.artist && work.slug) {
-    return (
-      <Link
-        to={`/lavori-recenti/${work.slug}`}
-        className="work-card work-card--linked"
-        aria-label={`Guarda le foto di ${work.artist}, ${work.venue}`}
-      >
-        {content}
-      </Link>
-    )
-  }
-
-  return <article className="work-card">{content}</article>
 }

@@ -1,45 +1,41 @@
+/* La libreria mette accanto al vetro dei riflessi con mix-blend-mode. Se l'header fosse un
+   livello a sé (position: fixed, z-index) li isolerebbe dalla pagina e Chrome non sfocherebbe
+   più il contenuto sotto il vetro: con display: contents i pezzi stanno sulla pagina come
+   nella demo, ognuno fisso e sopra il contenuto. */
 .header {
-  position: fixed;
-  inset: 0 0 auto;
+  display: contents;
+}
+
+.header > * {
   z-index: 100;
-  display: flex;
-  align-items: center;
+  /* La libreria centra i pezzi con translate(-50%, -50%): con larghezze dispari finirebbero
+     a mezzo pixel e il logo si sfocherebbe. La barra parte già dall'angolo. */
+  transform: none !important;
+}
+
+/* Il vetro della libreria si adatta al contenuto: qui riempie tutta la barra */
+.header__glass > .glass {
+  display: flex !important;
   justify-content: center;
-  height: var(--header-height);
-  background: var(--glass-tint);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow:
-    inset 0 -1px 0 var(--glass-edge),
-    0 1px 0 var(--glass-rim),
-    var(--glass-shadow);
-  transition: background-color 300ms;
+  width: 100%;
+  height: 100%;
 }
 
-/* Chromium: vicino ai bordi il contenuto sotto la barra si piega, come in una lente */
-.header--refraction {
-  backdrop-filter: var(--glass-filter) var(--glass-blur);
-}
-
-.header__filter {
-  position: absolute;
-  width: 0;
-  height: 0;
+/* La libreria scrive il contenuto a 20px: si torna al font del sito */
+.header__glass .glass > div {
+  font: inherit !important;
 }
 
 .header__logos {
   position: relative;
   display: flex;
   align-items: center;
-  height: 100%;
   animation: header-in 700ms var(--ease-out) both;
 }
 
 .header__logo {
   display: flex;
   align-items: center;
-  height: 100%;
-  padding: 0 12px;
 }
 
 .header__logo-image {
@@ -53,6 +49,7 @@
 }
 
 .header__times {
+  padding: 0 12px;
   font-size: 0.875rem;
   font-weight: 300;
   color: var(--color-text-muted);
@@ -72,7 +69,7 @@
 }
 
 @media (max-width: 734px) {
-  .header__logo {
+  .header__times {
     padding: 0 8px;
   }
 

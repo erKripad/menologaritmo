@@ -1,0 +1,39 @@
+/* La palla sborda dal testo: il filtro lavora su un'area allargata attorno al testo
+   (padding, calcolato in GlassLens.jsx), senza spostare l'impaginazione (margin negativo).
+   Lo sfondo pieno serve alle frange colorate: separano rosso, verde e blu di ciò che c'è
+   sotto, testo E sfondo. */
+.glass-lens {
+  --glass-lens-padding: 0px;
+  display: block;
+  padding: var(--glass-lens-padding);
+  margin: calc(-1 * var(--glass-lens-padding));
+  background: var(--color-bg);
+  transition: background-color 300ms;
+}
+
+.glass-lens__text {
+  display: inline-block;
+}
+
+/* Sopra la scritta c'è la palla: il cursore del mouse sparisce (la palla fa da cursore) */
+.glass-lens--ready .glass-lens__text {
+  cursor: none;
+}
+
+.glass-lens__filter {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* Bordo della palla: linea sottile nel colore del testo (scura sul chiaro, chiara sullo
+   scuro) e riflesso di luce bianco */
+.glass-lens__edge {
+  flood-color: var(--color-text);
+  flood-opacity: 0.6;
+}
+
+.glass-lens__shine {
+  flood-color: #ffffff;
+  flood-opacity: 0.9;
+}

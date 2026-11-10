@@ -71,16 +71,16 @@
   text-align: center;
 }
 
-/* Cellulare: progetti uno sopra l'altro, separati da una linea orizzontale */
+/* Cellulare: un progetto sotto l'altro, distanziati come due sezioni, senza linea */
 @media (max-width: 734px) {
   .projects__row {
     grid-template-columns: minmax(0, 1fr);
     justify-items: center;
-    row-gap: 40px;
+    row-gap: var(--section-padding);
   }
 
   .projects__logo {
-    width: min(64vw, 260px);
+    width: min(88vw, 380px);
   }
 
   /* Il cerchio lascerebbe troppo vuoto sopra e sotto i loghi larghi */
@@ -90,15 +90,6 @@
   }
 
   .projects__divider {
-    width: min(48vw, 200px);
-    height: 1px;
-  }
-
-  .projects__divider.reveal {
-    transform: scaleX(0);
-  }
-
-  .projects__divider.reveal--visible {
-    transform: scaleX(1);
+    display: none;
   }
 }

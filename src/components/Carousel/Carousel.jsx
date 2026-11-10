@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import './Carousel.css'
 
 const SWIPE_THRESHOLD = 50
+// Movimento minimo del dito prima di decidere se è uno scorrimento della pagina o della foto
+const DRAG_LOCK = 8
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -18,14 +20,16 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
   const [playing, setPlaying] = useState(() => !prefersReducedMotion())
   const [focused, setFocused] = useState(false)
   const [pageHidden, setPageHidden] = useState(false)
+  const [dragging, setDragging] = useState(false)
   // Cresce a ogni cambio di slide (automatico, swipe, pallino, freccia): fa ripartire il timer
   // e la barra di avanzamento. Il salto invisibile tra le copie non lo cambia.
   const [step, setStep] = useState(0)
-  const touchStartX = useRef(null)
+  const touch = useRef(null)
+  const track = useRef(null)
   const playButton = useRef(null)
 
   const active = position % count
-  const running = playing && !focused && !pageHidden && count > 1
+  const running = playing && !focused && !pageHidden && !dragging && count > 1
 
   const goTo = useCallback(
     (target) => {
@@ -83,16 +87,41 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
     }
   }
 
+  // Trascinamento col dito: la fila segue il dito (aggiornata direttamente sul DOM, senza
+  // ridisegnare le slide a ogni movimento); al rilascio va alla slide vicina o torna a posto.
+  const setDragOffset = (offset) => track.current?.style.setProperty('--drag', `${offset}px`)
+
   const handleTouchStart = (event) => {
-    touchStartX.current = event.touches[0].clientX
+    const { clientX, clientY } = event.touches[0]
+    touch.current = { startX: clientX, startY: clientY, delta: 0, horizontal: null }
   }
 
-  const handleTouchEnd = (event) => {
-    if (touchStartX.current === null) return
-    const delta = event.changedTouches[0].clientX - touchStartX.current
-    touchStartX.current = null
-    if (delta < -SWIPE_THRESHOLD) next()
-    else if (delta > SWIPE_THRESHOLD) previous()
+  const handleTouchMove = (event) => {
+    const state = touch.current
+    if (!state) return
+    const { clientX, clientY } = event.touches[0]
+    const deltaX = clientX - state.startX
+    const deltaY = clientY - state.startY
+
+    if (state.horizontal === null) {
+      if (Math.abs(deltaX) < DRAG_LOCK && Math.abs(deltaY) < DRAG_LOCK) return
+      state.horizontal = Math.abs(deltaX) > Math.abs(deltaY)
+      if (state.horizontal) setDragging(true)
+    }
+    if (!state.horizontal) return
+
+    state.delta = deltaX
+    setDragOffset(deltaX)
+  }
+
+  const handleTouchEnd = () => {
+    const state = touch.current
+    touch.current = null
+    if (!state?.horizontal) return
+    setDragging(false)
+    setDragOffset(0)
+    if (state.delta < -SWIPE_THRESHOLD) next()
+    else if (state.delta > SWIPE_THRESHOLD) previous()
   }
 
   // Ferma lo scorrimento solo se si arriva con la tastiera (Tab) su un elemento del carosello.
@@ -124,9 +153,16 @@ export default function Carousel({ items, renderItem, getKey, label, interval = 
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
     >
-      <div className="carousel__viewport" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      <div
+        className="carousel__viewport"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
+      >
         <ul
-          className={`carousel__track${animated ? ' carousel__track--animated' : ''}`}
+          ref={track}
+          className={`carousel__track${animated && !dragging ? ' carousel__track--animated' : ''}`}
           onTransitionEnd={handleTransitionEnd}
         >
           {slides.map((item, index) => {
