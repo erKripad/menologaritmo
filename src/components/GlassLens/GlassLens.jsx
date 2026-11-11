@@ -16,9 +16,6 @@ const WOBBLE_DRIFT = 0.4
 // Quanto in fretta la palla raggiunge il mouse e compare/scompare (0–1 per fotogramma)
 const FOLLOW = 0.22
 const FADE = 0.14
-// Col dito la palla parte solo trascinando di lato (almeno DRAG_START px): in su e in giù
-// la pagina scorre come sempre e la palla non compare
-const DRAG_START = 6
 // Sui dispositivi senza mouse la palla passa da sola sopra la scritta una volta, appena la
 // pagina si apre: SWEEP_DELAY ms dopo (il tempo che la scritta compaia), in SWEEP_DURATION ms
 const SWEEP_DELAY = 900
@@ -42,8 +39,8 @@ const stagePadding = (radius) => Math.ceil(radius * (IMAGE_RATIO + WOBBLE + WOBB
 // ingrandiscono e si piegano, il bordo è irregolare, ondeggia e si vede (linea sottile e
 // riflesso di luce). Solo distorsione, nessuna sfocatura.
 // Filtro SVG applicato al testo stesso, nessuna libreria.
-// Senza mouse (cellulare, tablet) la palla segue il dito trascinato di lato sulla scritta e,
-// all'apertura, passa da sola sopra la scritta per farsi vedere.
+// Senza mouse (cellulare, tablet) il tocco non la muove: all'apertura la palla passa da sola
+// sopra la scritta.
 export default function GlassLens({ children }) {
   const baseId = useId()
   const stageRef = useRef(null)
@@ -51,7 +48,6 @@ export default function GlassLens({ children }) {
   const filterRef = useRef(null)
   const lensRef = useRef(null)
   const motion = useRef({ x: 0, y: 0, targetX: 0, targetY: 0, strength: 0, target: 0, frame: 0 })
-  const drag = useRef(null)
   const sweep = useRef({ timer: 0, frame: 0 })
   const [lens, setLens] = useState(null)
 
@@ -190,39 +186,10 @@ export default function GlassLens({ children }) {
     return [text.left - stage.left, text.right - stage.left, text.top - stage.top + text.height / 2]
   }
 
-  function handlePointerDown(event) {
-    if (event.pointerType !== 'touch') return
-    stopSweep()
-    // Il browser lega il dito alla scritta anche fuori da essa: lo si slega, così uscendo
-    // dalla scritta la palla sparisce come col mouse
-    if (event.target.hasPointerCapture(event.pointerId)) event.target.releasePointerCapture(event.pointerId)
-    drag.current = { x: event.clientX, y: event.clientY, active: false }
-  }
-
-  function handlePointerMove(event) {
-    if (event.pointerType !== 'touch') return moveTo(...pointAt(event))
-    const current = drag.current
-    if (!current) return
-    if (!current.active) {
-      const dx = Math.abs(event.clientX - current.x)
-      const dy = Math.abs(event.clientY - current.y)
-      if (dx < DRAG_START || dx < dy) return
-      current.active = true
-      return moveTo(...pointAt(event), 1)
-    }
-    moveTo(...pointAt(event))
-  }
-
-  function handlePointerEnter(event) {
-    if (event.pointerType !== 'touch') moveTo(...pointAt(event), 1)
-  }
-
-  // Col dito arriva anche quando si alza il dito o il browser si prende il gesto per scorrere
-  function handlePointerLeave() {
-    drag.current = null
-    if (motion.current.target === 0) return
-    motion.current.target = 0
-    if (!motion.current.frame) motion.current.frame = requestAnimationFrame(tick)
+  // Solo col mouse (o la penna): il tocco del dito non muove la palla
+  function follow(event, target) {
+    if (event.pointerType === 'touch') return
+    moveTo(...pointAt(event), target)
   }
 
   return (
@@ -234,11 +201,9 @@ export default function GlassLens({ children }) {
       <span
         ref={textRef}
         className="glass-lens__text"
-        onPointerEnter={handlePointerEnter}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerLeave={handlePointerLeave}
-        onPointerCancel={handlePointerLeave}
+        onPointerEnter={(event) => follow(event, 1)}
+        onPointerMove={(event) => follow(event)}
+        onPointerLeave={(event) => follow(event, 0)}
       >
         {children}
       </span>
