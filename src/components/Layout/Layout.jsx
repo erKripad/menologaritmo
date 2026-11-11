@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import Header from '../Header/Header.jsx'
 import Footer from '../Footer/Footer.jsx'
@@ -13,6 +13,9 @@ const HEADER_PARTNERS = {
 export default function Layout() {
   const { pathname, state } = useLocation()
   const scrollTarget = state?.scrollTo
+  // Una pagina può nascondere l'header (es. l'apertura della home): vedi useHideHeaderWhileVisible
+  const [headerHidden, setHeaderHidden] = useState(false)
+  const outletContext = useMemo(() => ({ setHeaderHidden }), [])
 
   // Ogni nuova pagina si apre dall'inizio, oppure sulla sezione indicata
   // (es. dalla galleria si torna direttamente al carosello dei lavori recenti)
@@ -24,9 +27,9 @@ export default function Layout() {
 
   return (
     <div className="layout">
-      <Header partner={HEADER_PARTNERS[pathname]} />
+      <Header partner={HEADER_PARTNERS[pathname]} hidden={headerHidden} />
       <main className="layout__main">
-        <Outlet />
+        <Outlet context={outletContext} />
       </main>
       <Footer />
     </div>

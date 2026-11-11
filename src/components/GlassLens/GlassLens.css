@@ -13,6 +13,18 @@
 
 .glass-lens__text {
   display: inline-block;
+  /* Col dito: in su e in giù la pagina scorre, di lato si trascina la palla */
+  touch-action: pan-y pinch-zoom;
+}
+
+/* Senza mouse il dito sulla scritta serve alla palla: niente selezione del testo né menu
+   della pressione prolungata */
+@media (hover: none) {
+  .glass-lens__text {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
 }
 
 /* Sopra la scritta c'è la palla: il cursore del mouse sparisce (la palla fa da cursore) */

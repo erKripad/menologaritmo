@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import LiquidGlass from 'liquid-glass-react'
 import logos from '../../config/logos.js'
@@ -41,9 +42,20 @@ function Logo({ src, name, isPartner = false }) {
 // Se c'è un partner (es. pagina Radici) mostra la collaborazione: menologaritmo × Partner.
 // I file dei loghi si impostano in src/config/logos.js
 // La rifrazione sui bordi si vede solo su Chromium: Safari e Firefox mostrano il vetro sfocato.
-export default function Header({ partner }) {
+// hidden: la barra esce in alto (es. nell'apertura della home, dove la scritta fa già da logo).
+export default function Header({ partner, hidden = false }) {
+  // La barra scivola solo dopo il primo disegno: aprendo la home è già nascosta, senza
+  // vederla uscire
+  const [animated, setAnimated] = useState(false)
+  useEffect(() => {
+    let frame = requestAnimationFrame(() => (frame = requestAnimationFrame(() => setAnimated(true))))
+    return () => cancelAnimationFrame(frame)
+  }, [])
+
+  const classes = ['header', animated && 'header--animated', hidden && 'header--hidden'].filter(Boolean).join(' ')
+
   return (
-    <header className="header">
+    <header className={classes}>
       <LiquidGlass className="header__glass" style={GLASS_STYLE} {...GLASS}>
         <div className="header__logos">
           <Link to="/" className="header__logo" aria-label="menologaritmo, torna alla home">

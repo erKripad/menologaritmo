@@ -13,6 +13,38 @@
   transform: none !important;
 }
 
+/* Barra nascosta: scivola fuori in alto (ombra compresa) e poi sparisce anche per il tastierino
+   e i lettori di schermo. Solo spostamento, niente dissolvenza: un vetro semitrasparente perde
+   la sfocatura mentre sfuma. Le transizioni scritte dalla libreria nello stile vanno superate;
+   prima del primo disegno (senza header--animated) niente transizioni. */
+.header > * {
+  transition: none !important;
+}
+
+.header--hidden > * {
+  visibility: hidden;
+  translate: 0 calc(-100% - 64px);
+}
+
+.header--animated > * {
+  transition:
+    translate 450ms var(--ease-out),
+    visibility 0s !important;
+}
+
+.header--animated.header--hidden > * {
+  transition:
+    translate 450ms var(--ease-out),
+    visibility 0s 450ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header--animated > *,
+  .header--animated.header--hidden > * {
+    transition: none !important;
+  }
+}
+
 /* I due span sono i bordi luminosi che la libreria disegna attorno al vetro. Sulla barra, che
    tocca i lati dello schermo, si vedevano come una linea a sinistra e in basso; in più si
    accendono seguendo il mouse e, se il mouse esce in fretta, restano accesi. Tolti. */

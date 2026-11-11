@@ -1,6 +1,13 @@
-/* La lente sborda dal titolo: niente scorrimento orizzontale quando tocca i lati */
+/* La lente sborda dal titolo: niente scorrimento orizzontale quando tocca i lati.
+   Qui l'header è nascosto: l'apertura sale sotto il suo posto e occupa tutto lo schermo,
+   così la scritta sta davvero al centro. */
 .hero {
   overflow: hidden;
+}
+
+.hero.section--full-height {
+  min-height: 100svh;
+  margin-top: calc(-1 * var(--header-height));
 }
 
 .hero__scroll-hint {
